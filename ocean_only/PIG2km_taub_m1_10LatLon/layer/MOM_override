@@ -1,0 +1,21 @@
+! Blank file in which we can put "overrides" for parameters
+!#override DEBUG = True
+!#override VERBOSITY = 9
+HARMONIC_VISC = True
+CONT_PPM_AGGRESS_ADJUST = True
+CONT_PPM_VOLUME_BASED_CFL = True
+#override TRIM_IC_FOR_P_SURF = False
+#override MINIMUM_DEPTH = 9.9
+DEPRESS_INITIAL_SURFACE = True
+SURFACE_HEIGHT_IC_FILE = "sfc_ic.nc"
+#override TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"
+#override ICE_THICKNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"
+#override ICE_SHELF_FLUX_FACTOR = 0.0
+#override DT = 180.
+#override DT_THERM = 180.
+#override DYNAMIC_SHELF_MASS = False
+#override DAYMAX = 0.125
+#override RHO_T0_S0 = 1000.0
+PRESSURE_RECONSTRUCTION_SCHEME = 0
+#override KV_BBL_MIN = 1.e-3
+#override KV_TBL_MIN = 1.e-3
