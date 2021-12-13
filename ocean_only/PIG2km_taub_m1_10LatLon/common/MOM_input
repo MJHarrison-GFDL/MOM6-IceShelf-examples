@@ -266,7 +266,7 @@ T_REF = -0.5                    !   [degC]
 FIT_SALINITY = True             !   [Boolean] default = False
                                 ! If true, accept the prescribed temperature and fit the salinity; otherwise
                                 ! take salinity and fit temperature.
-TRIM_IC_FOR_P_SURF = True       !   [Boolean] default = False
+TRIM_IC_FOR_P_SURF = False       !   [Boolean] default = False
                                 ! If true, cuts way the top of the column for initial conditions at the depth
                                 ! where the hydrostatic pressure matches the imposed surface pressure which is
                                 ! read from file.

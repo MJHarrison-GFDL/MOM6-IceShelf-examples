@@ -7,11 +7,12 @@
 !THICKNESS_FILE = "thickness_ic.nc"
 REGRIDDING_COORDINATE_MODE = "Z*"
 #override BULKMIXEDLAYER = False
-#override TRIM_IC_FOR_P_SURF = False
 #override MINIMUM_DEPTH = 9.9
 #override THICKNESS_CONFIG = "uniform"
-DEPRESS_INITIAL_SURFACE = True
-SURFACE_HEIGHT_IC_FILE = "sfc_ic.nc"
+# Comment these lines for post 47e13d7e9 code
+!DEPRESS_INITIAL_SURFACE = True
+!SURFACE_HEIGHT_IC_FILE = "sfc_ic.nc"
+
 #override TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"
 #override ICE_THICKNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"
 #override ICE_SHELF_FLUX_FACTOR = 0.0
