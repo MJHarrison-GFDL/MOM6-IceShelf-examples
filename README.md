@@ -12,3 +12,6 @@ These results are strictly for developmental purposes and are not in any way sup
 >(cd common/INPUT;. wget.bash)
 
 >(cd layer; srun -n 4 <MOM6-solo.executable>)
+>(cd ALE/rho; srun -n 4 <MOM6-solo.executable>)
+>(cd ALE/zstar; srun -n 4 <MOM6-solo.executable>)
+
