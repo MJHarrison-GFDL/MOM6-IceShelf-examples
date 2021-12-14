@@ -5,12 +5,11 @@
 REGRIDDING_COORDINATE_MODE = "RHO"
 #REGRIDDING_COORDINATE_UNITS = "kg m-3"
 #override BULKMIXEDLAYER = False
+#override TRIM_IC_FOR_P_SURF = False
 #override MINIMUM_DEPTH = 9.9
 #override THICKNESS_CONFIG = "uniform"
-# Comment these lines for post 47e13d7e9 code
 !DEPRESS_INITIAL_SURFACE = True
 !SURFACE_HEIGHT_IC_FILE = "sfc_ic.nc"
-
 #override TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"
 #override ICE_THICKNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"
 #override ICE_SHELF_FLUX_FACTOR = 0.0
@@ -20,7 +19,7 @@ REGRIDDING_COORDINATE_MODE = "RHO"
 #override DAYMAX = 0.125
 #override RHO_T0_S0 = 1000.0
 !#override DETANGLE_INTERFACES = True
-PRESSURE_RECONSTRUCTION_SCHEME = 0
+PRESSURE_RECONSTRUCTION_SCHEME = 1
 #override KV_BBL_MIN = 1.e-3
 #override KV_TBL_MIN = 1.e-3
 !#override CHANNEL_DRAG = True

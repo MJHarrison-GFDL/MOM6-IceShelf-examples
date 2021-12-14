@@ -100,7 +100,8 @@ TOPO_CONFIG = "file"            !
                                 !     Phillips - ACC-like idealized topography used in the Phillips config.
                                 !     dense - Denmark Strait-like dense water formation and overflow.
                                 !     USER - call a user modified routine.
-TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_outcrp.nc" ! TOPO_FILE
+TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc" ! TOPO_FILE
+!TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp_updn.nc"
 ! === module ISOMIP_initialize_topography ===
 !MASKING_DEPTH = -20.00
 MINIMUM_DEPTH = 1.0             !   [m] default = 0.0
@@ -204,7 +205,8 @@ CDRAG_SHELF = 0.0025            !   [nondim] default = 0.003
 ICE_PROFILE_CONFIG = "FILE"     !
                                 ! This specifies how the initial ice profile is specified. Valid values are:
                                 ! CHANNEL, FILE, and USER.
-ICE_THICKNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_outcrp.nc" ! default = "ice_shelf_h.nc"
+!ICE_THICKNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp_updn.nc"
+ICE_THICKNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc" ! default = "ice_shelf_h.nc"
                                 ! The file from which the ice bathymetry and area are read.
 ICE_THICKNESS_VARNAME = "h_shelf" ! default = "h_shelf"
                                 ! The name of the thickness variable in ICE_THICKNESS_FILE.
@@ -266,11 +268,12 @@ T_REF = -0.5                    !   [degC]
 FIT_SALINITY = True             !   [Boolean] default = False
                                 ! If true, accept the prescribed temperature and fit the salinity; otherwise
                                 ! take salinity and fit temperature.
-TRIM_IC_FOR_P_SURF = False       !   [Boolean] default = False
+TRIM_IC_FOR_P_SURF = True       !   [Boolean] default = False
                                 ! If true, cuts way the top of the column for initial conditions at the depth
                                 ! where the hydrostatic pressure matches the imposed surface pressure which is
                                 ! read from file.
-SURFACE_PRESSURE_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_outcrp.nc" !
+!SURFACE_PRESSURE_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp_updn.nc"
+SURFACE_PRESSURE_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc" !
                                 ! The initial condition file for the surface pressure exerted by ice.
 SURFACE_PRESSURE_VAR = "h_shelf"  !   [Pa] default = ""
                                 ! The initial condition variable for the surface pressure exerted by ice.
@@ -482,7 +485,8 @@ V_TRUNC_FILE = "V_velocity_truncations" ! default = ""
 !===========module MOM_ice_shelf_dynamic
 ICE_A_GLEN_CONFIG = "FILE"  !This specifies how the ice-stiffness parameter is specified.
                                         !Valid values are: "CONSTANT" and "FILE".
-ICE_STIFFNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_outcrp.nc" ! File with ice-stiffness parameters
+ICE_STIFFNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc" ! File with ice-stiffness parameters
+!ICE_STIFFNESS_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp_updn.nc"
 A_GLEN_VARNAME = "A_glen" ! The name of the variable with basal friction coefficients
 
 A_GLEN = 2.261e-25     ! ice stiffness parameter Pa ^ (-1/3) s
@@ -492,7 +496,8 @@ MIN_STRAIN_RATE_GLEN = 1e-19    ! regularization parameter for flow law (s)^(-1)
 
 ICE_BASAL_FRICTION_CONFIG = "FILE"  !This specifies how the initial ice profile is specified. "
                                         !Valid values are: "CONSTANT" and "FILE".
-BASAL_FRICTION_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_outcrp.nc" ! File with basal friction coefficients
+BASAL_FRICTION_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc" ! File with basal friction coefficients
+!BASAL_FRICTION_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp_updn.nc"
 BASAL_FRICTION_VARNAME = "tau_b_beta" ! The name of the variable with basal friction coefficients
 
 BASAL_FRICTION_COEFF = 5.0e9   ! basal friction coeffiecient Pa (m/s)^(-1)
@@ -519,7 +524,8 @@ GROUNDING_LINE_INTERPOLATE = True
 GROUNDING_LINE_INTERP_SUBGRID_N = 5
 
 
-ICE_VELOCITY_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_outcrp.nc"!  The file for the ice-shelf velocities.
+ICE_VELOCITY_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"!  The file for the ice-shelf velocities.
+!ICE_VELOCITY_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp_updn.nc"
 ICE_U_VEL_VARNAME = "u_shelf"   ![m/s] default = "u_shelf"
                                ! The  variable for the u ice-shelf  velocity component.
 ICE_V_VEL_VARNAME = "v_shelf"   ![m/s] default = "v_shelf"
@@ -527,10 +533,13 @@ ICE_V_VEL_VARNAME = "v_shelf"   ![m/s] default = "v_shelf"
 ICE_VISC_VARNAME = "viscosity"  ![Pa s] default = "ice_visc"
                                 ! The  variable for the ice viscosity component
 
-BED_TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_outcrp.nc"!  The file for the ice-shelf bed topography.
+BED_TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"!  The file for the ice-shelf bed topography.
+!BED_TOPO_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp_updn.nc"
 BED_TOPO_VARNAME = "depth"
 
-ICE_SHELF_BC_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_outcrp.nc"!  The input file for the ice-shelf b.c.s.
+ICE_SHELF_BC_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp.nc"!  The input file for the ice-shelf b.c.s.
+!ICE_SHELF_BC_FILE = "PIG2kmp1_bbar_taub_m1_10nxny_bedelev_outcrp_updn.nc"
+
 ICE_THICKNESS_MASK_VARNAME = "h_mask"    ! [none] default "h_mask"
                                          ! The variable for ice-thickness mask
 
