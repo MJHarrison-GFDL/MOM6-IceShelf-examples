@@ -1,9 +1,13 @@
 # MOM6-IceShelf-examples
 
 
-This repository provides the configurations (input parameters and data) and their corresponding                                                                     regression data (for testing), of models that involve [MOM6](https://github.com/NOAA-GFDL/MOM6)                                                                 coupling with dynamic ice shelves.
+[MOM6](https://github.com/NOAA-GFDL/MOM6) coupling with static and dynamic ice shelves.
 
-These results are strictly for developmental purposes and are not in any way supported for external users.
+This repository provides configurations (input parameters and data) and their corresponding  regression data for testing purposes.
+
+
+These results are strictly for developmental purposes and are not supported for external users.
+
 
 ## Bash Example:
 
@@ -16,4 +20,3 @@ These results are strictly for developmental purposes and are not in any way sup
 >(cd ALE/rho; srun -n 4 <MOM6-solo.executable>)
 >
 >(cd ALE/zstar; srun -n 4 <MOM6-solo.executable>)
-

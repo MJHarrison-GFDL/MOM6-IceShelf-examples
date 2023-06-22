@@ -1,7 +1,0 @@
-save_dir="full_eos_rest"
-set executable="./MOM6
-(if [ ! -d work ] ; then mkdir work; fi)
-(if [ ! -d results ] ; then mkdir results; fi)
-(cd work;rm -rf *;cp ../data_table_zero data_table;cp ../{MOM_input,MOM_override,MOM_IS_input,input.nml,field_table,diag_table,Vertical_coordinate.nc} .;sed -i "s/\!2\!//g" MOM_override;sed -i "s/\!3\!//g" MOM_override;srun -n 64 $executable >& output)
-(if [ ! -d results/$save_dir ] ; then mkdir results/$save_dir; fi)
-(mv work/{*prog*.nc,IceShelf_IC.nc,ocean.stats*,MOM_parameter_doc.short,output} results/$save_dir)
