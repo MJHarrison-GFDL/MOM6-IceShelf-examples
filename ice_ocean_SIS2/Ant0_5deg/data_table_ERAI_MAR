@@ -1,0 +1,50 @@
+"ATM" , "p_surf"        , "Pair"         , "./INPUT/.datasets/Pair_ERAinterim_1982_padded.nc"          , "bilinear" ,  1.0
+"ATM" , "p_bot"        , "Pair"         , "./INPUT/.datasets/Pair_ERAinterim_1982_padded.nc"          , "bilinear" ,  1.0
+"ATM" , "t_bot"         , "Tair"    , "./INPUT/.datasets/Tair_ERAinterim_1982_padded.nc"     , "bilinear" ,  1.0
+"ATM" , "sphum_bot"     , "Qair"    , "./INPUT/.datasets/Qair_ERAinterim_1982_padded.nc"     , "bilinear" ,  1.0
+"ATM" , "u_bot"         , "Uwind"    , "./INPUT/.datasets/Uwind_ERAinterim_1982_padded.nc"     , "bilinear" ,  1.0
+"ATM" , "v_bot"         , "Vwind"    , "./INPUT/.datasets/Vwind_ERAinterim_1982_padded.nc"     , "bilinear" ,  1.0
+"ATM" , "z_bot"         , ""            , ""                             , "none" , 10.0
+"ATM" , "gust"          , ""            , ""                             , "none" ,  1.0e-8
+"ATM" , "flux_lw"       , "lwrad_down"    , "./INPUT/.datasets/lwrad_down_ERAinterim_1982_padded.nc"     , "bilinear" ,  1.0
+"ATM" , "co2_bot"       , ""        , ""                    , "none"     , 350.0e-6
+"ATM" , "co2"       , ""        , ""                    , "none"     , 350.0e-6
+#"ATM" , "flux_sw_down_total_dir",   "swrad", "./INPUT/.datasets/swrad_ERAinterim_1982_padded.nc", "bilinear" , 0.5
+#"ATM" , "flux_sw_down_total_dif",   "swrad", "./INPUT/.datasets/swrad_ERAinterim_1982_padded.nc", "bilinear" , 0.5
+#"ATM" , "flux_sw_down_vis_dir",   "swrad", "./INPUT/.datasets/swrad_ERAinterim_1982_padded.nc", "bilinear" , 0.5
+#"ATM" , "flux_sw_down_vis_dif",   "swrad", "./INPUT/.datasets/swrad_ERAinterim_1982_padded.nc", "bilinear" , 0.5
+"ICE" , "sw_flux_vis_dir_dn", "swrad", "./INPUT/.datasets/swrad_ERAinterim_1982_padded.nc", "bilinear" , 0.285
+"ICE" , "sw_flux_vis_dif_dn", "swrad", "./INPUT/.datasets/swrad_ERAinterim_1982_padded.nc", "bilinear" , 0.285
+"ICE" , "sw_flux_nir_dir_dn", "swrad", "./INPUT/.datasets/swrad_ERAinterim_1982_padded.nc", "bilinear" , 0.215
+"ICE" , "sw_flux_nir_dif_dn", "swrad", "./INPUT/.datasets/swrad_ERAinterim_1982_padded.nc", "bilinear" , 0.215
+"ATM" , "lprec"         , "rain"        , "./INPUT/.datasets/rain_ERAinterim_1982_padded.nc"  , "bilinear" ,  1.0
+"ATM" , "fprec"         , "snow"        , "./INPUT/.datasets/snow_ERAinterim_1982_padded.nc"  , "bilinear" ,  1.0
+"ICE" , "dhdt"          , ""            , ""                             , "none"  ,  80.0
+"ICE" , "dedt"          , ""            , ""                             , "none"  ,  2.0e-6
+"ICE" , "drdt"          , ""            , ""                             , "none"  , 10.0
+"ICE", "sic_obs"        , ""         ,""       , "none" ,  0.00
+"ICE", "sit_obs"        , ""         ,""       , "none" ,  0.00
+"ICE", "sst_obs"        , ""         ,""       , "bilinear" ,  0.0
+"LND" , "t_surf"        , ""            , ""                             , "none"  ,  273.0
+"LND" , "t_ca"          , ""            , ""                             , "none"  ,  273.0
+"LND" , "q_ca"          , ""            , ""                             , "none"  ,  0.0
+"LND" , "rough_mom"     , ""            , ""                             , "none"  ,  0.01
+"LND" , "rough_heat"    , ""            , ""                             , "none"  ,  0.1
+"LND" , "albedo"        , ""            , ""                             , "none"  ,  0.1
+#"LND" , "t_ca"         , ""            , ""                             , "none"  ,  273.0
+#"LND" , "t_surf"       , ""            , ""                             , "none"  ,  273.0
+"LND" , "sphum_surf"    , ""            , ""                             , "none"  ,  0.0
+"LND" , "sphum_ca"      , ""            , ""                             , "none"  ,  0.0
+"LND" , "t_flux"        , ""            , ""                             , "none"  ,  0.0
+"LND" , "sphum_flux"    , ""            , ""                             , "none"  ,  0.0
+"LND" , "lw_flux"       , ""            , ""                             , "none"  ,  0.0
+"LND" , "sw_flux"       , ""            , ""                             , "none"  ,  0.0
+"LND" , "lprec"         , ""            , ""                             , "none"  ,  0.0
+"LND" , "fprec"         , ""            , ""                             , "none"  ,  0.0
+"LND" , "dhdt"          , ""            , ""                             , "none"  ,  5.0
+"LND" , "dedt"          , ""            , ""                             , "none"  ,  2e-6
+"LND" , "dedq"          , ""            , ""                             , "none"  ,  0.0
+"LND" , "drdt"          , ""            , ""                             , "none"  ,  5.0
+"LND" , "drag_q"        , ""            , ""                             , "none"  ,  0.0
+"LND" , "p_surf"        , ""            , ""                             , "none"  ,  1.e5
+"OCN" , "shelf_sfc_mass_flux" , "TTz"      , "./INPUT/MAR-ERA-Interim_TTz_remapped_1979-2017_monthly.nc", "none"  ,  1.0

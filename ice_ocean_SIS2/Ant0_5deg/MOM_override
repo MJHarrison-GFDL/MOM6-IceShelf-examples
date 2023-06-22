@@ -1,0 +1,45 @@
+! Blank file in which we can put "overrides" for parameters
+!#override DEBUG = True
+!#override VERBOSITY = 9
+#override DAYMAX=5.0
+#override GUST_CONST=0.02
+
+
+!Test alternate shelf initialization procedure
+!1!#override TRIM_IC_FOR_P_SURF = True
+!1!SURFACE_PRESSURE_FILE = "AIS_SO_r10_BM_invAglen_beta_crs_obs_cr_HM.nc"
+!1!SURFACE_PRESSURE_VAR = "thick_shelf"
+!1!SURFACE_PRESSURE_SCALE = 8986.6
+
+!Test full EOS
+!2!#override EQN_OF_STATE = "WRIGHT"
+!2!#override TFREEZE_FORM = "MILLERO_78"
+
+!Turn on thermodynamic coupling between layers
+!3!#override ADIABATIC = False
+!3!#override BULKMIXEDLAYER = True
+!3!BULK_RI_ML = 0.05
+
+
+!Test realistic stratification
+!4!#override INIT_LAYERS_FROM_Z_FILE = True
+!4!#override TEMP_SALT_Z_INIT_FILE = "woa05_ptemp_salt.nc"
+!4!#override THICKNESS_CONFIG = "coord"
+!4!Z_INIT_FILE_PTEMP_VAR = "temp"
+!4!Z_INIT_FILE_SALT_VAR = "salt"
+!4!Z_INIT_ALE_REMAPPING = False
+!4!TEMP_SALT_INIT_VERTICAL_REMAP_ONLY = True
+
+!Turn on Shelf Thermodynamic Coupling
+!5!#override SHELF_THERMO = True
+!5!#override SHELF_INSULATOR = False
+
+!Turn on SPONGES at the northern boundary
+!6!SPONGE = True
+!6!SPONGE_CONFIG = "file"
+!6!SPONGE_DAMPING_FILE = "sponge.nc"
+!6!SPONGE_STATE_FILE = "woa05_ptemp_salt.nc"
+!6!SPONGE_PTEMP_VAR = "temp"
+!6!SPONGE_SALT_VAR = "salt"
+!6!INTERPOLATE_SPONGE_TIME_SPACE = True
+!6!SPONGE_DATA_ONGRID = True
