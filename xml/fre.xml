@@ -1,0 +1,2332 @@
+<?xml version="1.0"?>
+<!-- FRE Usage documentation: http://www.gfdl.noaa.gov/fms/fre -->
+<!--
+Quick start guide
+
+module load fre/test
+fremake -x fre.xml -p ncrc4.intel18 -t repro MOM6_SIS2_compile
+fremake -x fre.xml -p ncrc4.intel18 -t repro MOM6_SIS2_LM3_compile
+fremake -x fre.xml -p ncrc4.intel18 -t repro MOM6_solo_compile
+frerun  -x fre.xml -p ncrc4.intel18 -t repro Solo_001
+-->
+
+<experimentSuite rtsVersion="4" xmlns:xi="http://www.w3.org/2001/XInclude">
+  <property name="FRE_STEM"     value="FRE.2022.03_IOM"/>
+  <property name="GFDL_GROUP"   value="gfdl_O"/>
+  <property name="FRE_VERSION"  value="bronx-20"/>
+  <property name="PROD_SIMTIME" value="40"/>
+  <property name="CHUNK_LENGTH_A" value="1yr"/>
+  <property name="PP_START_YEAR" value="1982"/>
+  <property name="ANALYSIS_SWITCH" value="on"/>
+  <property name="MDBIswitch" value="off"/>
+  <!-- Reference release tag for existing files in the archives for answer comparison. Used in "REFERENCE" property. -->
+  <property name="reference_tag" value="none"/>
+  <!-- The following properties are for testing/debugging purposes and should normally be empty-->
+  <property name="DEBUGLEVEL" value=""/>
+  <property name="BUILD_DATE" value=""/>
+  <!--The start year of forcing dataset-->
+  <property name="append_to_setup_csh" value="set fyear=1982"/>
+  <property name="NULL_TAG" value=""/>
+  <property name="PLATINFO" value=""/>
+<!-- Range of forcing years (for LM3 spinup) -->
+  <property name="FORCING_YS"     value="1948" />
+  <property name="FORCING_YE"     value="1977" />
+
+  <setup>
+    <xi:include href="platforms.xml" xpointer="xpointer(//freInclude/platform[@name='ncrc5.intel22'])"/>
+    <xi:include href="platforms.xml" xpointer="xpointer(//freInclude/platform[@name='ncrc4.intel22'])"/>
+    <xi:include href="platforms.xml" xpointer="xpointer(//freInclude/platform[@name='ncrc4.intel18'])"/>
+    <xi:include href="platforms.xml" xpointer="xpointer(//freInclude/platform[@name='gfdl.ncrc5-intel22'])"/>
+    <xi:include href="platforms.xml" xpointer="xpointer(//freInclude/platform[@name='gfdl.ncrc4-intel22'])"/>
+    <xi:include href="platforms.xml" xpointer="xpointer(//freInclude/platform[@name='gfdl.ncrc4-intel18'])"/>
+  </setup>
+
+  <property name="PROG_MAIN" value="coupler/coupler_main.o"/>
+  <property name="gfdlO_pdata" value="/lustre/f2/pdata/gfdl/gfdl_O"/>
+
+<!--    <experiment name="MOM6_SIS2_LM3_compile"> -->
+<!--       <description> -->
+<!-- Make the executable for MOM6-SIS2-LM3 experiments with the FMScap. -->
+<!--       </description> -->
+<!--     <component name="fms" paths="FMS"> -->
+<!--       <source versionControl="git" root="https://github.com/NOAA-GFDL"> -->
+<!--             <codeBase version="2022.03"> FMS.git </codeBase> -->
+<!--       </source> -->
+<!--       <compile> -->
+<!--             <cppDefs>-Duse_libMPI -Duse_netCDF $(F2003_FLAGS) -DMAXFIELDMETHODS_=400</cppDefs> -->
+<!--       </compile> -->
+<!--     </component> -->
+
+<!--     <component name="Icepack" paths="Icepack/columnphysics" > -->
+<!--       <source versionControl="git" root="https://github.com/CICE-Consortium"> -->
+<!--         <codeBase version="main"> Icepack.git </codeBase> -->
+<!--         <csh><![CDATA[ -->
+<!--         (pushd Icepack  ;git checkout 23a8faf8820; popd) -->
+<!--         ]]></csh> -->
+<!--       </source> -->
+<!--       <compile> -->
+<!--             <cppDefs>$(F2003_FLAGS)</cppDefs> -->
+<!--       </compile> -->
+<!--     </component> -->
+
+<!--     <component name="icebergs" paths="icebergs/src" requires="fms"> -->
+<!--       <source versionControl="git" root="https://github.com/NOAA-GFDL"> -->
+<!--             <codeBase version="dev/gfdl"> icebergs.git </codeBase> -->
+<!--       </source> -->
+<!--       <compile> -->
+<!--         <cppDefs><![CDATA[$(F2003_FLAGS) -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs> -->
+<!--       </compile> -->
+<!--     </component> -->
+
+<!--       <component name="ice_param" paths="ice_param" requires="fms"> -->
+<!--          <description domainName="NA" communityName="NA" communityVersion="NA" communityGrid="NA"/> -->
+<!--          <source versionControl="git" root="https://github.com/NOAA-GFDL"> -->
+<!--             <codeBase version="2021.03"> ice_param.git </codeBase> -->
+<!--          </source> -->
+<!--       <compile> -->
+<!--         <cppDefs><![CDATA[$(F2003_FLAGS) -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs> -->
+<!--       </compile> -->
+
+<!--       </component> -->
+
+<!--     <component name="MOM6" requires="fms" paths="MOM6/config_src/memory/dynamic_nonsymmetric MOM6/config_src/drivers/FMS_cap MOM6/src/*/ MOM6/src/*/*/ MOM6/config_src/external/ODA_hooks MOM6/config_src/external/database_comms MOM6/config_src/external/drifters MOM6/config_src/external/stochastic_physics MOM6/config_src/external/GFDL_ocean_BGC MOM6/pkg/GSW-Fortran/modules MOM6/pkg/GSW-Fortran/toolbox MOM6/config_src/infra/FMS2"> -->
+<!--       <description domainName="Ocean" communityName="MOM6" communityVersion="GFDL" communityGrid="Tripolar"/> -->
+<!--        <source versionControl="git" root="https://github.com/NOAA-GFDL"> -->
+<!--         <codeBase version="dev/gfdl"> MOM6.git </codeBase> -->
+<!--         <csh><![CDATA[ -->
+<!--         (pushd MOM6  ;git checkout ded1382; git submodule init;git submodule update;popd) -->
+<!--         ]]></csh> -->
+<!--       </source> -->
+<!--       <compile> -->
+<!--         <cppDefs><![CDATA[ $(F2003_FLAGS) -DMAX_FIELDS_=100 -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs> -->
+<!--       </compile> -->
+<!--     </component> -->
+
+<!--     <component name="SIS2" requires="MOM6 Icepack ice_param icebergs fms" paths="SIS2/config_src/dynamic_symmetric SIS2/src icebergs/src ice_param Icepack/columnphysics"  includeDir="$root/MOM6_SIS2_LM3_compile/src/MOM6/src/framework"> -->
+<!--       <description domainName="Ocean" communityName="SIS2" communityVersion="GFDL" communityGrid="Tripolar"/> -->
+<!--        <source versionControl="git" root="https://github.com/MJHarrison-GFDL"> -->
+<!--         <codeBase version="wet_mask_coupler"> SIS2.git </codeBase> -->
+<!--         <csh><![CDATA[ -->
+<!--         (pushd SIS2  ;git checkout 922dc9d18533; git submodule init;git submodule update;popd) -->
+<!--         ]]></csh> -->
+<!--       </source> -->
+<!--       <compile> -->
+<!--         <cppDefs><![CDATA[ $(F2003_FLAGS) -DMAX_FIELDS_=100 -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs> -->
+<!--       </compile> -->
+<!--     </component> -->
+
+
+<!--       <component name="land_lad2" paths="land_lad2" requires="fms"> -->
+<!--          <description domainName="NA" communityName="NA" communityVersion="NA" communityGrid="NA"/> -->
+<!--          <source versionControl="git" root="https://gitlab.gfdl.noaa.gov/fms"> -->
+<!--            <codeBase version="user/mjh/hack_temp_range_check"> land_lad2.git </codeBase> -->
+<!--           <csh><![CDATA[ -->
+<!--           ( pushd land_lad2 && git checkout 93ae1f20335c && popd ) -->
+<!--           ]]></csh> -->
+<!--          </source> -->
+<!--          <compile> -->
+<!--             <cppDefs><![CDATA[$(F2003_FLAGS) -Duse_AM3_physics -DINTERNAL_FILE_NML -D_FILE_VERSION="'"`git-version-string $<`"'"]]></cppDefs> -->
+<!--         </compile> -->
+<!--       </component> -->
+
+<!--       <component name="atmos_null" paths="atmos_null" requires="fms"> -->
+<!--          <source versionControl="git" root="https://github.com/MJHarrison-GFDL"> -->
+<!--            <codeBase version="master"> atmos_null.git </codeBase> -->
+<!--           <csh><![CDATA[ -->
+<!--           ( pushd atmos_null && git checkout 87d5bfe91d97  && popd ) -->
+<!--           ]]></csh> -->
+<!--          </source> -->
+<!--          <compile> -->
+<!--             <cppDefs><![CDATA[$(F2003_FLAGS) -Duse_AM3_physics -DINTERNAL_FILE_NML -D_FILE_VERSION="'"`git-version-string $<`"'"]]></cppDefs> -->
+<!--         </compile> -->
+<!--       </component> -->
+
+<!--       <component name="coupler" paths="coupler" requires="fms land_lad2 atmos_null SIS2 MOM6"> -->
+<!--         <description domainName="FMS Coupler" communityName="coupler" communityVersion="NA" communityGrid=""/> -->
+<!--         <source versionControl="git" root="https://github.com/MJHarrison-GFDL"> -->
+<!--           <codeBase version="smb_balance_restart"> coupler.git </codeBase> -->
+<!--           <csh><![CDATA[ -->
+<!--           ( cd coupler && git checkout c97921d9f3) -->
+<!--           ]]></csh> -->
+<!--         </source> -->
+<!--         <compile> -->
+<!--             <cppDefs><![CDATA[$(F2003_FLAGS) -Duse_AM3_physics -DINTERNAL_FILE_NML -D_FILE_VERSION="'"`git-version-string $<`"'"]]></cppDefs> -->
+<!--         </compile> -->
+<!--       </component> -->
+<!--    </experiment> -->
+
+   <experiment name="MOM6_SIS2_compile">
+      <description>
+Make the executable for MOM6-SIS2 experiments with the FMScap.
+      </description>
+
+    <component name="fms" paths="FMS">
+      <source versionControl="git" root="https://github.com/NOAA-GFDL">
+            <codeBase version="2022.02"> FMS.git </codeBase>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[$(F2003_FLAGS) -Duse_libMPI -Duse_netCDF -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+    <component name="Icepack" paths="Icepack/columnphysics" >
+      <source versionControl="git" root="https://github.com/CICE-Consortium">
+        <codeBase version="main"> Icepack.git </codeBase>
+        <csh><![CDATA[
+        (pushd Icepack  ;git checkout 23a8faf8820; popd)
+        ]]></csh>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[ $(F2003_FLAGS) -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+    <component name="icebergs" paths="icebergs" requires="fms">
+      <source versionControl="git" root="https://github.com/NOAA-GFDL">
+        <codeBase version="dev/gfdl"> icebergs.git </codeBase>
+        <csh><![CDATA[
+        (pushd icebergs  ;git checkout 6a8944fc; git submodule init;git submodule update;popd)
+        ]]></csh>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[$(F2003_FLAGS) -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+      <component name="ice_param" paths="ice_param" requires="fms">
+         <description domainName="NA" communityName="NA" communityVersion="NA" communityGrid="NA"/>
+         <source versionControl="git" root="https://github.com/NOAA-GFDL">
+            <codeBase version="2021.03"> ice_param.git </codeBase>
+         </source>
+      </component>
+
+    <component name="MOM6" requires="fms" paths="MOM6/config_src/memory/dynamic_nonsymmetric MOM6/config_src/drivers/FMS_cap MOM6/src/*/ MOM6/src/*/*/ MOM6/config_src/external/ODA_hooks MOM6/config_src/external/database_comms MOM6/config_src/external/drifters MOM6/config_src/external/stochastic_physics MOM6/config_src/external/GFDL_ocean_BGC MOM6/pkg/GSW-Fortran/modules MOM6/pkg/GSW-Fortran/toolbox MOM6/config_src/infra/FMS2">
+      <description domainName="Ocean" communityName="MOM6" communityVersion="GFDL" communityGrid="Tripolar"/>
+       <source versionControl="git" root="https://github.com/MJHarrison-GFDL">
+        <codeBase version="MOM6_is_dev2"> MOM6.git </codeBase>
+        <csh><![CDATA[
+        (pushd MOM6  ;git checkout 5454ac79352; git submodule init;git submodule update;popd)
+        ]]></csh>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[ $(F2003_FLAGS) -DMAX_FIELDS_=100 -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+    <component name="SIS2" requires="MOM6 Icepack ice_param icebergs fms" paths="SIS2/config_src/dynamic_symmetric SIS2/src  ice_param Icepack/columnphysics"  includeDir="$root/MOM6_SIS2_compile/src/MOM6/src/framework">
+      <description domainName="Ocean" communityName="SIS2" communityVersion="GFDL" communityGrid="Tripolar"/>
+       <source versionControl="git" root="https://github.com/MJHarrison-GFDL">
+        <codeBase version="wet_mask_coupler"> SIS2.git </codeBase>
+        <csh><![CDATA[
+        (pushd SIS2  ;git checkout 88d9e32c145; git submodule init;git submodule update;popd)
+        ]]></csh>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[ $(F2003_FLAGS) -DMAX_FIELDS_=100 -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+      <component name="land_null" paths="land_null" requires="fms">
+         <description domainName="NA" communityName="NA" communityVersion="NA" communityGrid="NA"/>
+         <source versionControl="git" root="https://github.com/NOAA-GFDL">
+           <codeBase version="master"> land_null.git </codeBase>
+           <csh><![CDATA[
+           (pushd land_null;git checkout 49b089e;popd)
+           ]]></csh>
+         </source>
+        <compile>
+            <cppDefs><![CDATA[$(F2003_FLAGS) -D_FILE_VERSION="'"`git-version-string $<`"'"]]></cppDefs>
+        </compile>
+      </component>
+
+      <component name="atmos_null" paths="atmos_null" requires="fms">
+         <source versionControl="git" root="https://github.com/NOAA-GFDL">
+           <codeBase version="master"> atmos_null.git </codeBase>
+          <csh><![CDATA[
+          ( pushd atmos_null && git checkout aeac506  && popd )
+          ]]></csh>
+         </source>
+         <compile>
+            <cppDefs>$(F2003_FLAGS) </cppDefs>
+        </compile>q
+      </component>
+
+      <component name="coupler" paths="coupler" requires="fms land_null atmos_null SIS2 MOM6">
+        <description domainName="FMS Coupler" communityName="coupler" communityVersion="NA" communityGrid=""/>
+        <source versionControl="git" root="https://github.com/NOAA-GFDL">
+          <codeBase version="main"> coupler.git </codeBase>
+          <csh><![CDATA[
+          ( cd coupler && git checkout 14578f0 )
+          ]]></csh>
+        </source>
+        <compile>
+            <cppDefs><![CDATA[$(F2003_FLAGS) -Duse_AM3_physics  -D_USE_LEGACY_LAND_ -D_FILE_VERSION="'"`git-version-string $<`"'"]]></cppDefs>
+        </compile>
+      </component>
+
+   </experiment>
+
+   <experiment name="MOM6_solo_compile">
+      <description>
+Make the executable for MOM6 experiments with the solo driver
+      </description>
+
+    <component name="fms" paths="FMS">
+      <source versionControl="git" root="https://github.com/NOAA-GFDL">
+            <codeBase version="2022.02"> FMS.git </codeBase>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[$(F2003_FLAGS) -Duse_libMPI -Duse_netCDF -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+    <component name="Icepack" paths="Icepack/columnphysics" >
+      <source versionControl="git" root="https://github.com/CICE-Consortium">
+        <codeBase version="main"> Icepack.git </codeBase>
+        <csh><![CDATA[
+        (pushd Icepack  ;git checkout 23a8faf8820; popd)
+        ]]></csh>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[ $(F2003_FLAGS) -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+    <component name="icebergs" paths="icebergs" requires="fms">
+      <source versionControl="git" root="https://github.com/NOAA-GFDL">
+        <codeBase version="dev/gfdl"> icebergs.git </codeBase>
+        <csh><![CDATA[
+        (pushd icebergs  ;git checkout 6a8944fc; git submodule init;git submodule update;popd)
+        ]]></csh>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[$(F2003_FLAGS) -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+      <component name="ice_param" paths="ice_param" requires="fms">
+         <description domainName="NA" communityName="NA" communityVersion="NA" communityGrid="NA"/>
+         <source versionControl="git" root="https://github.com/NOAA-GFDL">
+            <codeBase version="2021.03"> ice_param.git </codeBase>
+         </source>
+      </component>
+
+    <component name="MOM6" requires="fms" paths="MOM6/config_src/memory/dynamic_symmetric MOM6/config_src/drivers/solo_driver/* MOM6/src/*/ MOM6/src/*/*/ MOM6/config_src/external/ODA_hooks MOM6/config_src/external/database_comms MOM6/config_src/external/drifters MOM6/config_src/external/stochastic_physics MOM6/config_src/external/GFDL_ocean_BGC MOM6/pkg/GSW-Fortran/modules MOM6/pkg/GSW-Fortran/toolbox MOM6/config_src/infra/FMS2">
+      <description domainName="Ocean" communityName="MOM6" communityVersion="GFDL" communityGrid="Tripolar"/>
+       <source versionControl="git" root="https://github.com/MJHarrison-GFDL">
+        <codeBase version="MOM6_is_dev2"> MOM6.git </codeBase>
+        <csh><![CDATA[
+        (pushd MOM6  ;git checkout 5454ac79352; git submodule init;git submodule update;popd)
+        ]]></csh>
+      </source>
+      <compile>
+        <cppDefs><![CDATA[ $(F2003_FLAGS) -DMAX_FIELDS_=100 -D_FILE_VERSION="'"`git-version-string $<`"'" ]]></cppDefs>
+      </compile>
+    </component>
+
+
+
+
+   </experiment>
+
+  <!-- For a new run starting from non-restart initial conditions, this starts the first year as a new run and then restarts for subsequent years -->
+
+  <freInclude name="common_init_csh_blocks">
+    <input>
+      <csh type="always"><![CDATA[
+
+
+# create dummy MOM6 parameter file for do_ocean=.false.
+touch $work/INPUT/MOM_input
+touch $work/INPUT/MOM_override
+touch $work/INPUT/MOM_layout
+touch $work/INPUT/SIS_override
+touch $work/INPUT/SIS_layout
+
+
+# Record the job stdout location for later use timings database
+cat >> $HOME/frejobs_stdout <<EOF_frejobs
+$stdoutDir/$FRE_JOBID
+EOF_frejobs
+
+
+####COMMON ALWAYS CSH BEGINS######
+# MOM6 restart switch
+if ( $currentSeg == 1 ) then
+   set restart_flag = 'n'
+else
+   set restart_flag = 'r'
+endif
+
+######################################################################
+#  The finite-volume cubed-sphere model should have the dry mass
+#  adjusted at the initial model time only. This script determines
+#  if the model is at the initial time by comparing model start time
+#  and current time in the coupler.res file.
+######################################################################
+set adjust_dry_mass = ".true."
+if (-e $work/INPUT/coupler.res) then
+   set t1 = (`grep "Model start time"   $work/INPUT/coupler.res | awk '{print $1,$2,$3,$4,$5,$6}'`)
+   set t2 = (`grep "Current model time" $work/INPUT/coupler.res | awk '{print $1,$2,$3,$4,$5,$6}'`)
+   foreach i (1 2 3 4 5 6)
+      if ( $t1[$i] != $t2[$i] ) then
+         set adjust_dry_mass = ".false."
+         break
+      endif
+   end
+endif
+
+#Scan auxiliary_nml for setting MOM6/SIS2 layouts
+
+cat > $work/INPUT/MOM_layout << MOM_LAYOUT_EOF
+#override IO_LAYOUT = $ocn_io_layout
+#override LAYOUT    = $ocn_layout
+#override MASKTABLE = $ocn_mask_table
+#override PARALLEL_RESTARTFILES = True
+MOM_LAYOUT_EOF
+
+cat > $work/INPUT/SIS_layout << SIS_LAYOUT_EOF
+#override IO_LAYOUT = $ice_io_layout
+#override LAYOUT    = $ice_layout
+#override PARALLEL_RESTARTFILES = True
+SIS_LAYOUT_EOF
+
+cat > $work/INPUT/SIS2_layout << SIS2_LAYOUT_EOF
+#override MASKTABLE = $ocn_mask_table
+#override IO_LAYOUT = $ocn_io_layout
+#override LAYOUT    = $ocn_layout
+#override IO_LAYOUT_FAST = $ice_io_layout
+#override LAYOUT_FAST    = $ice_layout
+SIS2_LAYOUT_EOF
+
+#timing runs show that nyblocks = 2 * atm_threads perform better than nyblocks = atm_threads
+set nxblock = 1
+set nyblock = $atm_threads
+
+###The following vars are set for the timing database ingestion tool only and are not necessary for a successful run
+set OCN_MASK_TABLE  =  $ocn_mask_table
+set OCN_LAYOUT    = $ocn_layout
+set OCN_IO_LAYOUT = $ocn_io_layout
+set ICE_MASK_TABLE  =  $ice_mask_table
+set ICE_LAYOUT    = $ice_layout
+set ICE_IO_LAYOUT = $ice_io_layout
+set atmos_npes = $atm_ranks
+set ocean_npes = $ocn_ranks
+set fv_layout = $atm_layout
+set fv_io_layout  = $atm_io_layout
+set land_layout   = $lnd_layout
+set land_io_layout = $lnd_io_layout
+#set dummy  = `awk '/nxblocks/ {gsub(/=/," ");gsub(/,/," ");print $2}' $work/input.nml`
+set nxblocks = $nxblock
+#set dummy  = `awk '/nyblocks/ {gsub(/=/," ");gsub(/,/," ");print $2}' $work/input.nml`
+set nyblocks = $nyblock
+
+####COMMON ALWAYS CSH ENDS######
+      ]]></csh>
+
+     </input>
+  </freInclude>
+
+  <experiment name="Solo_001" inherit="MOM6_solo_compile">
+    <description>
+      Solo resting ocean with Linear EOS and no cavities
+    </description>
+    <input>
+      <namelist name="ocean_solo_nml">
+        months = $months
+        days   = $days
+        date_init = 1,1,1,0,0,0
+        hours = 0
+        minutes = 0
+        seconds = 0
+        calendar = 'NOLEAP'
+      </namelist>
+      <namelist name="time_interp_external_nml">
+      </namelist>
+      <namelist name="diag_manager_nml">
+        max_files = 100
+        flush_nc_files=.false.
+        max_axes = 100
+        max_num_axis_sets = 100
+        max_input_fields = 699
+        max_output_fields = 699
+        mix_snapshot_average_fields=.false.
+      </namelist>
+      <namelist name="fms_nml">
+        clock_grain='ROUTINE'
+        clock_flags='NONE'
+        domains_stack_size = 8000000
+        stack_size =0
+      </namelist>
+      <namelist name="fms_io_nml">
+        fms_netcdf_restart=.true.
+        threading_read='multi'
+        max_files_r = 800
+        max_files_w = 800
+        checksum_required=.false.
+      </namelist>
+      <namelist name="MOM_input_nml">
+         output_directory = './'
+         input_filename = '$restart_flag'
+         restart_input_dir = 'INPUT/'
+         restart_output_dir = 'RESTART/'
+         parameter_filename = 'INPUT/MOM_input','INPUT/MOM_override'
+      </namelist>
+
+   </input>
+
+
+    <runtime>
+      <production simTime="1" units="months">
+        <segment simTime="1" units="months"/>
+        <resources jobWallclock="12:00:00" segRuntime="10:00:00">
+          <ice ranks="144" threads="1" layout = "12,12" io_layout = "2,2" />
+          <ocn ranks="144" threads="1" layout = "12,12" io_layout = "2,2" />
+        </resources>
+      </production>
+
+      <regression name="basic">
+        <run days="1">
+          <resources jobWallclock="01:00:00" segRuntime="01:00:00">
+          <ice ranks="144" threads="1" layout = "12,12" io_layout = "2,2" />
+          <ocn ranks="144" threads="1" layout = "12,12" io_layout = "2,2" />
+        </resources>
+        </run>
+      </regression>
+    </runtime>
+
+    <postProcess>
+      <!--PostProcessing component models-->
+      <component type="ocean_daily" source="ocean_daily" sourceGrid="ocean-tripolar" cmip="off">
+        <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)">
+        </timeSeries>
+      </component>
+
+      <component type="ocean_monthly_z"   source="ocean_month" sourceGrid="ocean-tripolar" cmip="off">
+        <timeSeries freq="monthly" chunkLength="$(CHUNK_LENGTH_A)" source="ocean_month">
+        </timeSeries>
+      </component>
+
+      <!-- <component type="ocean_monthly" source="ocean_month_snap" sourceGrid="ocean-tripolar" cmip="off"> -->
+      <!--   <timeSeries freq="monthly" chunkLength="$(CHUNK_LENGTH_A)"/> -->
+      <!-- </component> -->
+
+      <!--ICE-->
+      <!-- <component type="ice_daily"  source="ice_daily"  sourceGrid="ocean-tripolar" cmip="off"> -->
+      <!--   <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)"  source="ice_daily"> -->
+      <!--   </timeSeries> -->
+      <!-- </component> -->
+
+      <!-- <component type="atmos_daily"  source="atmos_daily"  sourceGrid="atmos-cubedsphere" xyInterp="360,576" cmip="off"> -->
+      <!--   <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)"  source="atmos_daily"> -->
+      <!--   </timeSeries> -->
+      <!-- </component> -->
+
+
+      <csh><![CDATA[
+         cd $work
+         #Make a directory to trick FRE to pick up and archive in ascii
+         mkdir extra.results
+         mv *velocity_truncations MOM_parameter_doc* SIS_parameter_doc* seaice.stats* ocean.stats* extra.results/
+         cp diag_table extra.results/.
+         cp $scriptName extra.results/runscript.csh
+         #When the ocean uses a mask_table the ocean_static.nc file produced by the model run has holes in coordinates (geolon,geolat)
+         #This causes problems for ferret and python tools for analysis.
+         #Copy a non-masked version of ocean_static.nc to be saved as a history file to be used by the analysis scipts .
+         #cp $work/INPUT/ocean_static_no_mask_table.nc $work/
+      ]]></csh>
+      <!-- <refineDiag script="/home/mdteam/DET/analysis/vitals/gfdlvitals_refineDiag.v3.0.5.csh"/> -->
+      <!-- <xi:include href="awg_include/xml_building_blocks/om4_cmip6_postprocess.xml" xpointer="xpointer(//freInclude[@name='OM4_cmip6_postprocess']/postProcess/node())"/> -->
+    </postProcess>
+  </experiment>
+
+  <experiment name="Solo_002" inherit="Solo_001">
+    <description>
+      Solo resting ocean with Linear EOS and cavities
+    </description>
+    <input>
+
+    <xi:include xpointer="xpointer(//freInclude[@name='choose_restart']/input/node())"/>
+        <csh type="always">
+          <![CDATA[
+touch $work/INPUT/MOM_override
+cat > $work/INPUT/MOM_override <<EOF_ov
+#override MINIMUM_DEPTH = 0.0
+#override TOPO_FILE = "iced_ocean_topo_SP_025deg.nc"
+EOF_ov
+
+# Record the job stdout location for later use timings database
+cat >> $HOME/frejobs_stdout <<EOF_frejobs
+$stdoutDir/$FRE_JOBID
+EOF_frejobs
+cd $work
+      ]]>
+      </csh>
+
+
+      <fieldTable>
+      </fieldTable>
+      <dataFile label="gridSpec" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/grid_mosaics.tar</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/ocean_solo_mosaic.tar</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/ocean_solo_inputs.tar</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/iced_ocean_topo_SP_025deg.nc</dataSource>
+      </dataFile>
+
+
+    </input>
+  </experiment>
+
+
+  <experiment name="Solo_003" inherit="Solo_001">
+    <description>
+      Solo resting ocean with Linear EOS and cavities DO_ICE_SHELF = T
+    </description>
+    <input>
+
+    <xi:include xpointer="xpointer(//freInclude[@name='choose_restart']/input/node())"/>
+        <csh type="always">
+          <![CDATA[
+touch $work/INPUT/MOM_override
+cat > $work/INPUT/MOM_override <<EOF_ov
+#override MINIMUM_DEPTH = 0.0
+#override TOPO_FILE = "topog.nc"
+#override GRID_FILE = "ocean_hgrid.nc"
+ICE_SHELF = True
+SHELF_INSULATOR = True
+ICE_SHELF_TEMPERATURE = -20.0
+DENSITY_ICE = 917.
+USTAR_SHELD_BG = 0.001
+ICE_PROFILE_CONFIG = "FILE"
+ICE_THICKNESS_FILE = "AIS_SP_025deg.nc"
+ICE_THICKNESS_VARNAME = "thick_shelf"
+ICE_AREA_VARNAME = "shelf_area"
+BED_TOPO_FILE = "AIS_SP_025deg.nc"
+BED_TOPO_VARNAME = "bed_elev"
+#override DT = 600.
+#override TRIM_IC_FOR_P_SURF = True
+#override ANGSTROM = 1.e-15
+#override COL_THICK_MELT_THRESHOLD = 1.0
+#override MIN_THICKNESS = 1.e-12
+SURFACE_PRESSURE_FILE = "AIS_SP_025deg.nc"
+SURFACE_PRESSURE_VAR = "thick_shelf"
+SURFACE_PRESSURE_SCALE = 8986.6
+#override CONT_PPM_AGGRESS_ADJUST = True
+FIXED_DEPTH_LOTW_ML = True
+LOTW_VISC_ML_FLOOR = True
+#override HARMONIC_BL_SCALE = 1.0
+#override HMIX_FIXED = 20.0
+#override KV_ML_INVZ2 = 1.e-4
+
+EOF_ov
+
+# Record the job stdout location for later use timings database
+cat >> $HOME/frejobs_stdout <<EOF_frejobs
+$stdoutDir/$FRE_JOBID
+EOF_frejobs
+cd $work
+      ]]>
+      </csh>
+
+      <diagTable>
+iOM4_C192
+1 1 1 0 0 0
+"ocean_daily",            24, "hours",   1, "days", "time"
+"ocean_static",     -1,  "months", 1, "days", "time"
+"ocean_month",            1, "months",   1, "days", "time"
+#"ocean_month_snap",            1, "months",   1, "days", "time"
+
+
+"ocean_model", "areacello",   "areacello",   "ocean_static", "all", "none", "none", 2
+"ocean_model", "deptho",      "deptho",      "ocean_static", "all", "none", "none", 2
+"ocean_model", "sftof",       "sftof",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "wet",       "wet",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "rhozero",       "rhozero",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "cpocean",       "cpocean",       "ocean_static", "all", "none", "none", 2
+
+
+"ocean_model", "SSH",          "ssh",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSU",          "ssu",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSV",          "ssv",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SST",          "sst",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSS",          "sss",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "taux",          "taux",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "tauy",          "tauy",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "ustar",          "ustar",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "PRCmE",          "PRCmE",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "pbo",          "pbo",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "net_heat_coupler",          "net_heat_coupler",              "ocean_daily", "all", "mean", "none",2
+
+
+
+"ocean_model_z", "uav",          "u",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "vav",          "v",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "vh",          "vh",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "temp",          "temp",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "salt",          "salt",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "SSH",                 "ssh",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "taux",          "taux",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "tauy",          "tauy",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "PRCmE",          "PRCmE",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "pbo",          "pbo",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "net_heat_coupler",          "net_heat_coupler",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "MLD_003",          "MLD_003",              "ocean_month", "all", "mean", "none",2
+
+
+#"ocean_model", "uav",          "u",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "vav",          "v",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "Kd_interface",          "Kd_interface",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "e",          "e",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "temp",          "temp",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "salt",          "salt",              "ocean_month_snap", "all", "none", "none",2
+</diagTable>
+
+      <fieldTable>
+      </fieldTable>
+      <dataFile label="gridSpec" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/ocean_solo_mosaic_040523.tar</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/ocean_solo_inputs.tar</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/AIS_SP_025deg.nc</dataSource>
+      </dataFile>
+
+
+    </input>
+  </experiment>
+
+  <experiment name="Cpld_SIS2_001" inherit="MOM6_SIS2_compile">
+    <description>
+      Solo resting ocean with Linear EOS and cavities DO_ICE_SHELF = T with wet Antarctica (testing code updates)
+    </description>
+    <input>
+      <namelist name="MOM_input_nml">
+         output_directory = './',
+         input_filename = 'n'
+         restart_input_dir = 'INPUT/',
+         restart_output_dir = 'RESTART/',
+         parameter_filename = 'INPUT/MOM_input','INPUT/MOM_IS_input','INPUT/MOM_override'
+      </namelist>
+
+      <namelist name="SIS_input_nml">
+         output_directory = './',
+         input_filename = 'n'
+         restart_input_dir = 'INPUT/',
+         restart_output_dir = 'RESTART/',
+         parameter_filename = 'INPUT/SIS_input','INPUT/SIS_override'
+      </namelist>
+
+      <namelist name="coupler_nml">
+            months = $months,
+            days   = $days,
+            hours  = 0,
+            current_date = 1982,1,1,0,0,0,
+            calendar = 'NOLEAP',
+            dt_cpld = 300,
+            dt_atmos = 300,
+            do_atmos = .false.,
+            do_land = .false.,
+            do_ice = .true.,
+            do_ocean = .true.,
+            do_flux = .true.,
+            atmos_npes = 0,
+            ocean_npes = 0,
+            concurrent = .false.,
+            use_lag_fluxes=.false.,
+            check_stocks = 0
+      </namelist>
+
+      <namelist name="sat_vapor_pres_nml">
+        construct_table_wrt_liq = .true.
+        construct_table_wrt_liq_and_ice = .true.
+      </namelist>
+
+      <namelist name="atmos_model_nml">
+        layout = 0, 0
+        use_restarts - .true.
+      </namelist>
+
+      <namelist name="diag_manager_nml">
+        max_axes = 100,
+        max_num_axis_sets = 100,
+        max_input_fields = 699
+        max_output_fields = 699
+        mix_snapshot_average_fields=.false.
+      </namelist>
+
+      <namelist name="flux_exchange_nml">
+            debug_stocks = .FALSE.
+            divert_stocks_report = .TRUE.
+            do_area_weighted_flux = .FALSE.
+	    partition_fprec_from_lprec = .true.
+      </namelist>
+
+      <namelist name="fms_io_nml">
+        fms_netcdf_restart=.true.
+        threading_read='multi'
+        max_files_r = 200
+        max_files_w = 200
+      </namelist>
+
+      <namelist name="fms_nml">
+        clock_grain='ROUTINE'
+        clock_flags='NONE'
+        domains_stack_size = 5000000
+        stack_size =0
+      </namelist>
+
+      <namelist name="ice_albedo_nml">
+        t_range = 10.
+      </namelist>
+      <namelist name="ice_model_nml">
+      </namelist>
+      <namelist name="icebergs_nml">
+        verbose=.false.
+        verbose_hrs=24
+        traj_sample_hrs=24
+        debug=.false.
+        really_debug=.false.
+        use_operator_splitting=.TRUE.
+        bergy_bit_erosion_fraction=0.0
+        sicn_shift=0.1
+        parallel_reprod=.TRUE.
+        use_slow_find=.true.
+        add_weight_to_ocean=.false.
+        passive_mode=.false.
+        generate_test_icebergs=.false.
+        speed_limit=0.
+        use_roundoff_fix=.true.
+        make_calving_reproduce=.true.
+        tidal_drift=0.005
+        coastal_drift=0.001
+        force_all_pes_traj=.true.
+      </namelist>
+      <namelist name="monin_obukhov_nml">
+        neutral = .false.,
+        stable_option =  2,
+        rich_crit = 10.0,
+        zeta_trans =  0.5
+      </namelist>
+      <namelist name="ocean_albedo_nml">
+        ocean_albedo_option = 2
+      </namelist>
+      <namelist name="ocean_rough_nml">
+        rough_scheme = 'beljaars'
+        roughness_min = 1.e-4
+      </namelist>
+      <namelist name="surface_flux_nml">
+        gust_min = 1.e-10
+      </namelist>
+
+    <xi:include xpointer="xpointer(//freInclude[@name='choose_restart']/input/node())"/>
+        <csh type="always">
+          <![CDATA[
+touch $work/INPUT/MOM_override
+cat > $work/INPUT/MOM_override <<EOF_ov
+#override MINIMUM_DEPTH = 0.0
+#override TOPO_FILE = "AIS_SP_025deg_v4.nc"
+#override GRID_FILE = "ocean_hgrid.nc"
+#override DT = 600.
+#override ANGSTROM = 1.e-15
+#override CONT_PPM_AGGRESS_ADJUST = True
+FIXED_DEPTH_LOTW_ML = True
+LOTW_VISC_ML_FLOOR = True
+#override HARMONIC_BL_SCALE = 1.0
+#override HMIX_FIXED = 20.0
+#override KV_ML_INVZ2 = 1.e-4
+EOF_ov
+
+cat > $work/INPUT/MOM_IS_input <<EOF_is
+ICE_SHELF = True
+SHELF_INSULATOR = True
+ICE_SHELF_TEMPERATURE = -20.0
+DENSITY_ICE = 917.
+USTAR_SHELD_BG = 0.001
+ICE_PROFILE_CONFIG = "FILE"
+ICE_THICKNESS_FILE = "AIS_SP_025deg_v4.nc"
+ICE_THICKNESS_VARNAME = "thick_shelf"
+ICE_AREA_VARNAME = "shelf_area"
+BED_TOPO_FILE = "AIS_SP_025deg_v4.nc"
+BED_TOPO_VARNAME = "bed_elev"
+#override TRIM_IC_FOR_P_SURF = True
+#override COL_THICK_MELT_THRESHOLD = 1.0
+#override MIN_THICKNESS = 1.e-12
+SURFACE_PRESSURE_FILE = "AIS_SP_025deg_v4.nc"
+SURFACE_PRESSURE_VAR = "thick_shelf"
+SURFACE_PRESSURE_SCALE = 8986.6
+EOF_is
+
+touch $work/INPUT/SIS_override
+
+# Record the job stdout location for later use timings database
+cat >> $HOME/frejobs_stdout <<EOF_frejobs
+$stdoutDir/$FRE_JOBID
+EOF_frejobs
+cd $work
+      ]]>
+      </csh>
+
+      <diagTable>
+iOM4
+1 1 1 0 0 0
+"ocean_daily",            24, "hours",   1, "days", "time"
+"ocean_static",     -1,  "months", 1, "days", "time"
+"ocean_month",            1, "months",   1, "days", "time"
+#"ocean_month_snap",            1, "months",   1, "days", "time"
+
+
+"ocean_model", "areacello",   "areacello",   "ocean_static", "all", "none", "none", 2
+"ocean_model", "deptho",      "deptho",      "ocean_static", "all", "none", "none", 2
+"ocean_model", "sftof",       "sftof",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "wet",       "wet",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "rhozero",       "rhozero",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "cpocean",       "cpocean",       "ocean_static", "all", "none", "none", 2
+
+
+"ocean_model", "SSH",          "ssh",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSU",          "ssu",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSV",          "ssv",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SST",          "sst",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSS",          "sss",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "taux",          "taux",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "tauy",          "tauy",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "ustar",          "ustar",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "PRCmE",          "PRCmE",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "pbo",          "pbo",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "net_heat_coupler",          "net_heat_coupler",              "ocean_daily", "all", "mean", "none",2
+
+
+
+"ocean_model_z", "uav",          "u",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "vav",          "v",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "vh",          "vh",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "temp",          "temp",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "salt",          "salt",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "SSH",                 "ssh",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "taux",          "taux",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "tauy",          "tauy",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "PRCmE",          "PRCmE",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "pbo",          "pbo",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "net_heat_coupler",          "net_heat_coupler",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "MLD_003",          "MLD_003",              "ocean_month", "all", "mean", "none",2
+
+
+#"ocean_model", "uav",          "u",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "vav",          "v",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "Kd_interface",          "Kd_interface",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "e",          "e",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "temp",          "temp",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "salt",          "salt",              "ocean_month_snap", "all", "none", "none",2
+</diagTable>
+      <dataTable>
+"ATM" , "p_surf"        , ""         , ""          , "bilinear" ,  1.0e7
+"ATM" , "p_bot"        , ""         , ""          , "bilinear" ,  1.0e7
+"ATM" , "t_bot"         , ""    , ""     , "bilinear" ,  273.15
+"ATM" , "sphum_bot"     , ""    , ""     , "bilinear" ,  0.0
+"ATM" , "u_bot"         , ""    , ""     , "bilinear" ,  0.0
+"ATM" , "v_bot"         , ""    , ""     , "bilinear" ,  0.0
+"ATM" , "z_bot"         , ""            , ""                             , "none" , 10.0
+"ATM" , "gust"          , ""            , ""                             , "none" ,  1.0e-8
+"ATM" , "flux_lw"       , ""    , ""     , "bilinear" ,  1.0
+"ATM" , "co2_bot"       , ""        , ""                    , "none"     , 350.0e-6
+"ATM" , "co2"       , ""        , ""                    , "none"     , 350.0e-6
+"ICE" , "u_flux", "", "", "bilinear" , 1.e-12
+"ICE" , "v_flux", "", "", "bilinear" , 1.e-12
+"ICE" , "t_flux", "", "", "bilinear" , 0.
+"ICE" , "q_flux", "", "", "bilinear" , 0.
+"ICE" , "lw_flux", "", "", "bilinear" , 0.
+"ICE" , "sw_flux_vis_dir", "", "", "bilinear" , 0.
+"ICE" , "sw_flux_vis_dif", "", "", "bilinear" , 0.
+"ICE" , "sw_flux_nir_dir", "", "", "bilinear" , 0.
+"ICE" , "sw_flux_nir_dif", "", "", "bilinear" , 0.
+"ATM" , "lprec"         , ""        , ""  , "bilinear" ,  0.0
+"ATM" , "fprec"         , ""        , ""  , "bilinear" ,  0.0
+"ICE" , "dhdt"          , ""            , ""                             , "none"  ,  80.0
+"ICE" , "dedt"          , ""            , ""                             , "none"  ,  2.0e-6
+"ICE" , "drdt"          , ""            , ""                             , "none"  , 10.0
+"ICE", "sic_obs"        , ""         ,""       , "none" ,  0.00
+"ICE", "sit_obs"        , ""         ,""       , "none" ,  0.00
+"ICE", "sst_obs"        , ""         ,""       , "bilinear" ,  0.0
+"LND" , "t_surf"        , ""            , ""                             , "none"  ,  273.0
+"LND" , "t_ca"          , ""            , ""                             , "none"  ,  273.0
+"LND" , "q_ca"          , ""            , ""                             , "none"  ,  0.0
+"LND" , "rough_mom"     , ""            , ""                             , "none"  ,  0.01
+"LND" , "rough_heat"    , ""            , ""                             , "none"  ,  0.1
+"LND" , "albedo"        , ""            , ""                             , "none"  ,  0.1
+#"LND" , "t_ca"         , ""            , ""                             , "none"  ,  273.0
+#"LND" , "t_surf"       , ""            , ""                             , "none"  ,  273.0
+"LND" , "sphum_surf"    , ""            , ""                             , "none"  ,  0.0
+"LND" , "sphum_ca"      , ""            , ""                             , "none"  ,  0.0
+"LND" , "t_flux"        , ""            , ""                             , "none"  ,  0.0
+"LND" , "sphum_flux"    , ""            , ""                             , "none"  ,  0.0
+"LND" , "lw_flux"       , ""            , ""                             , "none"  ,  0.0
+"LND" , "sw_flux"       , ""            , ""                             , "none"  ,  0.0
+"LND" , "lprec"         , ""            , ""                             , "none"  ,  0.0
+"LND" , "fprec"         , ""            , ""                             , "none"  ,  0.0
+"LND" , "dhdt"          , ""            , ""                             , "none"  ,  5.0
+"LND" , "dedt"          , ""            , ""                             , "none"  ,  2e-6
+"LND" , "dedq"          , ""            , ""                             , "none"  ,  0.0
+"LND" , "drdt"          , ""            , ""                             , "none"  ,  5.0
+"LND" , "drag_q"        , ""            , ""                             , "none"  ,  0.0
+"LND" , "p_surf"        , ""            , ""                             , "none"  ,  1.e5
+      </dataTable>
+
+      <fieldTable>
+      </fieldTable>
+      <dataFile label="gridSpec" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/ocean_solo_mosaic_040523.tar</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/ocean_solo_inputs_041023.tar</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/AIS_SP_025deg_v4.nc</dataSource>
+      </dataFile>
+
+
+    </input>
+
+    <runtime>
+      <production simTime="1" units="months">
+        <segment simTime="1" units="months"/>
+        <resources jobWallclock="12:00:00" segRuntime="12:00:00">
+          <ice ranks="144" threads="1" layout = "12,12" io_layout = "2,2" />
+          <ocn ranks="144" threads="1" layout = "12,12" io_layout = "2,2" />
+        </resources>
+      </production>
+
+      <regression name="basic">
+        <run days="1">
+          <resources jobWallclock="01:00:00" segRuntime="01:00:00">
+          <ice ranks="144" threads="1" layout = "12,12" io_layout = "2,2" />
+          <ocn ranks="144" threads="1" layout = "12,12" io_layout = "2,2" />
+        </resources>
+        </run>
+      </regression>
+    </runtime>
+
+    <postProcess>
+      <!--PostProcessing component models-->
+      <component type="ocean_daily" source="ocean_daily" sourceGrid="ocean-tripolar" cmip="off">
+        <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)">
+        </timeSeries>
+      </component>
+
+      <component type="ocean_monthly_z"   source="ocean_month" sourceGrid="ocean-tripolar" cmip="off">
+        <timeSeries freq="monthly" chunkLength="$(CHUNK_LENGTH_A)" source="ocean_month">
+        </timeSeries>
+      </component>
+
+      <!-- <component type="ocean_monthly" source="ocean_month_snap" sourceGrid="ocean-tripolar" cmip="off"> -->
+      <!--   <timeSeries freq="monthly" chunkLength="$(CHUNK_LENGTH_A)"/> -->
+      <!-- </component> -->
+
+      <!--ICE-->
+      <component type="ice_daily"  source="ice_daily"  sourceGrid="ocean-tripolar" cmip="off">
+        <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)"  source="ice_daily">
+        </timeSeries>
+      </component>
+
+      <!-- <component type="atmos_daily"  source="atmos_daily"  sourceGrid="atmos-cubedsphere" xyInterp="360,576" cmip="off"> -->
+      <!--   <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)"  source="atmos_daily"> -->
+      <!--   </timeSeries> -->
+      <!-- </component> -->
+
+
+      <csh><![CDATA[
+         cd $work
+r         #Make a directory to trick FRE to pick up and archive in ascii
+         mkdir extra.results
+         mv *velocity_truncations MOM_parameter_doc* SIS_parameter_doc* seaice.stats* ocean.stats* extra.results/
+         cp diag_table extra.results/.
+         cp $scriptName extra.results/runscript.csh
+         #When the ocean uses a mask_table the ocean_static.nc file produced by the model run has holes in coordinates (geolon,geolat)
+         #This causes problems for ferret and python tools for analysis.
+         #Copy a non-masked version of ocean_static.nc to be saved as a history file to be used by the analysis scipts .
+         #cp $work/INPUT/ocean_static_no_mask_table.nc $work/
+      ]]></csh>
+      <!-- <refineDiag script="/home/mdteam/DET/analysis/vitals/gfdlvitals_refineDiag.v3.0.5.csh"/> -->
+      <!-- <xi:include href="awg_include/xml_building_blocks/om4_cmip6_postprocess.xml" xpointer="xpointer(//freInclude[@name='OM4_cmip6_postprocess']/postProcess/node())"/> -->
+    </postProcess>
+
+  </experiment>
+
+  <experiment name="Cpld_SIS2_ERAI" inherit="MOM6_SIS2_compile">
+    <description>
+      Full EOS and cavities DO_ICE_SHELF = T with ERAI
+    </description>
+    <input>
+      <namelist name="MOM_input_nml">
+         output_directory = './',
+         input_filename = '$restart_flag'
+         restart_input_dir = 'INPUT/',
+         restart_output_dir = 'RESTART/',
+         parameter_filename = 'INPUT/MOM_input','INPUT/MOM_IS_input','INPUT/MOM_override'
+      </namelist>
+
+      <namelist name="get_cal_time_nml">
+        allow_calendar_conversion = .true.
+      </namelist>
+
+
+      <namelist name="SIS_input_nml">
+         output_directory = './',
+         input_filename = '$restart_flag'
+         restart_input_dir = 'INPUT/',
+         restart_output_dir = 'RESTART/',
+         parameter_filename = 'INPUT/SIS_input','INPUT/SIS_override'
+      </namelist>
+
+      <namelist name="coupler_nml">
+            months = $months,
+            days   = $days,
+            hours  = 0,
+            current_date = 1982,1,1,0,0,0,
+            calendar = 'julian',
+            dt_cpld = 300,
+            dt_atmos = 300,
+            do_atmos = .false.,
+            do_land = .false.,
+            do_ice = .true.,
+            do_ocean = .true.,
+            do_flux = .true.,
+            atmos_npes = 0,
+            ocean_npes = 0,
+            concurrent = .false.,
+            use_lag_fluxes=.false.,
+            check_stocks = 0
+      </namelist>
+
+      <namelist name="sat_vapor_pres_nml">
+        construct_table_wrt_liq = .true.
+        construct_table_wrt_liq_and_ice = .true.
+      </namelist>
+
+      <namelist name="atmos_model_nml">
+        layout = 0, 0
+        use_restarts - .true.
+      </namelist>
+
+      <namelist name="diag_manager_nml">
+        max_axes = 100,
+        max_num_axis_sets = 100,
+        max_input_fields = 699
+        max_output_fields = 699
+        mix_snapshot_average_fields=.false.
+      </namelist>
+
+      <namelist name="flux_exchange_nml">
+            debug_stocks = .FALSE.
+            divert_stocks_report = .TRUE.
+            do_area_weighted_flux = .FALSE.
+	    partition_fprec_from_lprec = .true.
+      </namelist>
+
+      <namelist name="fms_io_nml">
+        fms_netcdf_restart=.true.
+        threading_read='multi'
+        max_files_r = 200
+        max_files_w = 200
+      </namelist>
+
+      <namelist name="fms_nml">
+        clock_grain='ROUTINE'
+        clock_flags='NONE'
+        domains_stack_size = 5000000
+        stack_size =0
+      </namelist>
+
+      <namelist name="ice_albedo_nml">
+        t_range = 10.
+      </namelist>
+      <namelist name="ice_model_nml">
+      </namelist>
+      <namelist name="icebergs_nml">
+        verbose=.false.
+        verbose_hrs=24
+        traj_sample_hrs=24
+        debug=.false.
+        really_debug=.false.
+        use_operator_splitting=.TRUE.
+        bergy_bit_erosion_fraction=0.0
+        sicn_shift=0.1
+        parallel_reprod=.TRUE.
+        use_slow_find=.true.
+        add_weight_to_ocean=.false.
+        passive_mode=.false.
+        generate_test_icebergs=.false.
+        speed_limit=0.
+        use_roundoff_fix=.true.
+        make_calving_reproduce=.true.
+        tidal_drift=0.005
+        coastal_drift=0.001
+        force_all_pes_traj=.true.
+      </namelist>
+      <namelist name="monin_obukhov_nml">
+        neutral = .false.,
+        stable_option =  2,
+        rich_crit = 10.0,
+        zeta_trans =  0.5
+      </namelist>
+      <namelist name="ocean_albedo_nml">
+        ocean_albedo_option = 2
+      </namelist>
+      <namelist name="ocean_rough_nml">
+        rough_scheme = 'beljaars'
+        roughness_min = 1.e-4
+      </namelist>
+      <namelist name="surface_flux_nml">
+        gust_min = 1.e-10
+      </namelist>
+
+    <xi:include xpointer="xpointer(//freInclude[@name='choose_restart']/input/node())"/>
+        <csh type="always">
+          <![CDATA[
+touch $work/INPUT/MOM_override
+cat > $work/INPUT/MOM_override <<EOF_ov
+#override MINIMUM_DEPTH = 9.9
+#override MASKING_DEPTH = 0.0
+#override TOPO_FILE = "iced_topog_ocean_v3.nc"
+#override GRID_FILE = "ocean_hgrid.nc"
+#override DT = 600.
+#override DT_THERM = 1200.
+#override ANGSTROM = 1.e-15
+#override CONT_PPM_AGGRESS_ADJUST = True
+#override BULKMIXEDLAYER = True
+BULK_RI_ML = 0.05
+#override ADIABATIC = False
+#override FRAZIL = True
+#override INIT_LAYERS_FROM_Z_FILE = True
+TEMP_SALT_Z_INIT_FILE = "WOA05_ptemp_salt_filled.nc"
+Z_INIT_FILE_PTEMP_VAR = "temp"
+Z_INIT_FILE_SALT_VAR = "salt"
+TEMP_SALT_INIT_VERTICAL_REMAP_ONLY = True
+#override USTAR_SHELF_BG = 1.e-5
+#override THICKNESSDIFFUSE = True
+#override KHTH = 100.0
+#override KHTH_MAX = 100.
+USE_RIGID_SEA_ICE = True
+MSTAR = 0.3
+LIMIT_BUFFER_DETRAIN = True
+DYNAMIC_VISCOUS_ML = True
+#override COORD_CONFIG = "file"
+#override COORD_FILE = "Vertical_coordinate.nc"
+#override NK  = 63
+#override MAXTRUNC = 1000000
+FIXED_DEPTH_LOTW_ML = True
+LOTW_VISCOUS_ML_FLOOR = True
+#override KV = 1.e-3
+#override GUST_CONST = 0.02
+#override RHO_0 = 1035.
+#override EQN_OF_STATE = "WRIGHT"
+#override TFREEZE_FORM = "MILLERO_78"
+#override RESOLN_SCALED_KH = False
+#override RESOLN_SCALED_KHTH = False
+#override BE = 0.7
+#override HARMONIC_VISC = True
+#override HARMONIC_BL_SCALE = 1.0
+#override BEBT = 0.1
+#override P_REF = 2.0e7
+USE_LAND_MASK_FOR_HVISC = True
+!#override USE_REGRIDDING = True
+!#override NK = 75
+!#override REGRIDDING_COORDINATE_MODE = "HYCOM1"
+!BOUNDARY_EXTRAPOLATION = True
+!ALE_COORDINATE_CONFIG = "HYBRID:hycom1_75_800m.nc,sigma2,FNC1:2,4000,4.5,.01"
+!REGRID_COMPRESSIBILITY_FRACTION = 0.01
+!MAXIMUM_INT_DEPTH_CONFIG = "FNC1:5,8000.0,1.0,.01"
+!MAX_LAYER_THICKNESS_CONFIG = "FNC1:400,31000.0,0.1,.01"
+!REMAPPING_SCHEME = "PPM_H4"
+!ENERGETICS_SFC_PBL = True
+!EPBL_MSTAR_SCHEME = "OM4"
+!ML_OMEGA_FRAC = 0.001
+!TKE_DECAY = 0.01
+!MSTAR_CAP = 10.0
+!MSTAR2_COEF2 = 0.152
+!NSTAR = 0.06
+!MSTAR_CONV_ADJ = 0.667
+!USE_MLD_ITERATION = True
+!EPBL_TRANSITION_SCALE = 0.01
+!MIX_LEN_EXPONENT = 1.0
+#override SAVE_INITIAL_CONDS = True
+#override ADJUST_THICKNESS = True
+#override FIT_TO_TARGET_DENSITY_IC = False
+#override USE_LEGACY_DIABATIC_DRIVER = False
+#override USE_VARIABLE_MIXING = True
+#overrider RESOLN_SCALED_KH = True
+#overrider RESOLN_SCALED_KHTH = True
+#override KHTR_SLOPE_CFF = 0.25
+#override ML_USE_OMEGA = True
+#override BBL_THICK_MIN = 0.1
+#override HTBL_SHELF_MIN = 0.1
+#override SMAGORINSKY_KH = True
+#override KH = 0.0
+#override KH_VEL_SCALE = 0.0
+#override SMAGORINSKY_KH = True
+#override SMAG_LAP_CONST = 0.01
+#override AH_VEL_SCALE = 0.025
+#override AH_SIME_SCALE = 0.0
+#override DETANGLE_INTERFACES = True
+#override MIXEDLAYER_RESTRAT = True
+#override FOX_KEMPER_ML_RESTRAT_COEF = 5.0
+#override PRESSURE_DEPENDENT_FRAZIL = True
+#override ML_RADIATION = True
+ML_RAD_COEFF = 0.1
+#override TKE_DECAY = 10.0
+#override DISSIPATION_N0 = 1.e-7
+#override DISSIPATION_N1 = 6.e-4
+#override USE_JACKSON_PARAM = True
+#override MAX_P_SURF = 0.0
+#override ADJUST_NET_FRESH_WATER_TO_ZERO = True
+#override ADJUST_NET_FRESH_WATER_BY_SCALING = True
+#override Z_INIT_REMAP_GENERAL = True
+#override Z_INIT_REMAP_FULL_COLUMN = True
+#override PRANDTL_TURB = 1.0
+#override REGULARIZE_SURFACE_LAYERS = True
+#override PEN_SW_SCALE = 40.0
+EOF_ov
+
+cat > $work/INPUT/MOM_IS_input <<EOF_is
+ICE_SHELF = True
+SHELF_INSULATOR = True
+ICE_SHELF_TEMPERATURE = -20.0
+DENSITY_ICE = 917.
+USTAR_SHELD_BG = 0.001
+ICE_PROFILE_CONFIG = "FILE"
+ICE_THICKNESS_FILE = "AIS_SP_025deg.nc"
+ICE_THICKNESS_VARNAME = "thick_shelf"
+ICE_AREA_VARNAME = "shelf_area"
+BED_TOPO_FILE = "AIS_SP_025deg.nc"
+BED_TOPO_VARNAME = "bed_elev"
+#override TRIM_IC_FOR_P_SURF = True
+#override COL_THICK_MELT_THRESHOLD = 1.0
+#override MIN_THICKNESS = 1.e-12
+SURFACE_PRESSURE_FILE = "AIS_SP_025deg.nc"
+SURFACE_PRESSURE_VAR = "thick_shelf"
+SURFACE_PRESSURE_SCALE = 8986.6
+EOF_is
+
+cat > $work/INPUT/SIS_override <<EOF_sis
+
+EOF_sis
+
+# Record the job stdout location for later use timings database
+cat >> $HOME/frejobs_stdout <<EOF_frejobs
+$stdoutDir/$FRE_JOBID
+EOF_frejobs
+cd $work/INPUT
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/lwrad_down_ERAinterim_${fyear}_padded.nc lwrad_down.nc
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/Pair_ERAinterim_${fyear}_padded.nc Pair.nc
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/Qair_ERAinterim_${fyear}_padded.nc Qair.nc
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/rain_ERAinterim_${fyear}_padded.nc rain.nc
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/snow_ERAinterim_${fyear}_padded.nc snow.nc
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/swrad_ERAinterim_${fyear}_padded.nc swrad.nc
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/Tair_ERAinterim_${fyear}_padded.nc Tair.nc
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/Uwind_ERAinterim_${fyear}_padded.nc Uwind.nc
+ln -sf /lustre/f2/dev/Matthew.Harrison/datasets/ERA-Interim/padded/Vwind_ERAinterim_${fyear}_padded.nc Vwind.nc
+
+cd $work
+      ]]>
+      </csh>
+
+      <diagTable>
+iOM4
+1 1 1 0 0 0
+"ocean_daily",            24, "hours",   1, "days", "time"
+"ocean_static",     -1,  "months", 1, "days", "time"
+"ocean_month",            1, "months",   1, "days", "time"
+#"ocean_month_snap",            1, "months",   1, "days", "time"
+
+
+"ocean_model", "areacello",   "areacello",   "ocean_static", "all", "none", "none", 2
+"ocean_model", "deptho",      "deptho",      "ocean_static", "all", "none", "none", 2
+"ocean_model", "sftof",       "sftof",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "wet",       "wet",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "rhozero",       "rhozero",       "ocean_static", "all", "none", "none", 2
+"ocean_model", "cpocean",       "cpocean",       "ocean_static", "all", "none", "none", 2
+
+
+"ocean_model", "SSH",          "ssh",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSU",          "ssu",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSV",          "ssv",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SST",          "sst",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "SSS",          "sss",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "taux",          "taux",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "tauy",          "tauy",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "ustar",          "ustar",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "PRCmE",          "PRCmE",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "pbo",          "pbo",              "ocean_daily", "all", "mean", "none",2
+"ocean_model", "net_heat_coupler",          "net_heat_coupler",              "ocean_daily", "all", "mean", "none",2
+
+
+
+"ocean_model_z", "uav",          "u",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "vav",          "v",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "vh",          "vh",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "temp",          "temp",              "ocean_month", "all", "mean", "none",2
+"ocean_model_z", "salt",          "salt",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "SSH",                 "ssh",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "taux",          "taux",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "tauy",          "tauy",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "PRCmE",          "PRCmE",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "pbo",          "pbo",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "net_heat_coupler",          "net_heat_coupler",              "ocean_month", "all", "mean", "none",2
+"ocean_model", "MLD_003",          "MLD_003",              "ocean_month", "all", "mean", "none",2
+
+
+#"ocean_model", "uav",          "u",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "vav",          "v",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "Kd_interface",          "Kd_interface",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "e",          "e",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "temp",          "temp",              "ocean_month_snap", "all", "none", "none",2
+#"ocean_model", "salt",          "salt",              "ocean_month_snap", "all", "none", "none",2
+</diagTable>
+      <dataTable>
+"ATM" , "p_surf"        , "Pair"         , "./INPUT/Pair.nc"          , "bilinear" ,  1.0
+"ATM" , "p_bot"        , "Pair"         , "./INPUT/Pair.nc"          , "bilinear" ,  1.0
+"ATM" , "t_bot"         , "Tair"    , "./INPUT/Tair.nc"     , "bilinear" ,  1.0
+"ATM" , "sphum_bot"     , "Qair"    , "./INPUT/Qair.nc"     , "bilinear" ,  1.0
+"ATM" , "u_bot"         , "Uwind"    , "./INPUT/Uwind.nc"     , "bilinear" ,  1.0
+"ATM" , "v_bot"         , "Vwind"    , "./INPUT/Vwind.nc"     , "bilinear" ,  1.0
+"ATM" , "z_bot"         , ""            , ""                             , "none" , 10.0
+"ATM" , "gust"          , ""            , ""                             , "none" ,  1.0e-8
+"ATM" , "flux_lw"       , "lwrad_down"    , "./INPUT/lwrad_down.nc"     , "bilinear" ,  1.0
+"ATM" , "co2_bot"       , ""        , ""                    , "none"     , 350.0e-6
+"ATM" , "co2"       , ""        , ""                    , "none"     , 350.0e-6
+#"ATM" , "flux_sw_down_total_dir",   "swrad", "./INPUT/swrad.nc", "bilinear" , 0.5
+#"ATM" , "flux_sw_down_total_dif",   "swrad", "./INPUT/swrad.nc", "bilinear" , 0.5
+#"ATM" , "flux_sw_down_vis_dir",   "swrad", "./INPUT/swrad.nc", "bilinear" , 0.5
+#"ATM" , "flux_sw_down_vis_dif",   "swrad", "./INPUT/swrad.nc", "bilinear" , 0.5
+"ICE" , "sw_flux_vis_dir_dn", "swrad", "./INPUT/swrad.nc", "bilinear" , 0.285
+"ICE" , "sw_flux_vis_dif_dn", "swrad", "./INPUT/swrad.nc", "bilinear" , 0.285
+"ICE" , "sw_flux_nir_dir_dn", "swrad", "./INPUT/swrad.nc", "bilinear" , 0.215
+"ICE" , "sw_flux_nir_dif_dn", "swrad", "./INPUT/swrad.nc", "bilinear" , 0.215
+"ATM" , "lprec"         , "rain"        , "./INPUT/rain.nc"  , "bilinear" ,  1.0
+"ATM" , "fprec"         , "snow"        , "./INPUT/snow.nc"  , "bilinear" ,  1.0
+"ICE" , "dhdt"          , ""            , ""                             , "none"  ,  80.0
+"ICE" , "dedt"          , ""            , ""                             , "none"  ,  2.0e-6
+"ICE" , "drdt"          , ""            , ""                             , "none"  , 10.0
+"ICE", "sic_obs"        , ""         ,""       , "none" ,  0.00
+"ICE", "sit_obs"        , ""         ,""       , "none" ,  0.00
+"ICE", "sst_obs"        , ""         ,""       , "bilinear" ,  0.0
+"LND" , "t_surf"        , ""            , ""                             , "none"  ,  273.0
+"LND" , "t_ca"          , ""            , ""                             , "none"  ,  273.0
+"LND" , "q_ca"          , ""            , ""                             , "none"  ,  0.0
+"LND" , "rough_mom"     , ""            , ""                             , "none"  ,  0.01
+"LND" , "rough_heat"    , ""            , ""                             , "none"  ,  0.1
+"LND" , "albedo"        , ""            , ""                             , "none"  ,  0.1
+#"LND" , "t_ca"         , ""            , ""                             , "none"  ,  273.0
+#"LND" , "t_surf"       , ""            , ""                             , "none"  ,  273.0
+"LND" , "sphum_surf"    , ""            , ""                             , "none"  ,  0.0
+"LND" , "sphum_ca"      , ""            , ""                             , "none"  ,  0.0
+"LND" , "t_flux"        , ""            , ""                             , "none"  ,  0.0
+"LND" , "sphum_flux"    , ""            , ""                             , "none"  ,  0.0
+"LND" , "lw_flux"       , ""            , ""                             , "none"  ,  0.0
+"LND" , "sw_flux"       , ""            , ""                             , "none"  ,  0.0
+"LND" , "lprec"         , ""            , ""                             , "none"  ,  0.0
+"LND" , "fprec"         , ""            , ""                             , "none"  ,  0.0
+"LND" , "dhdt"          , ""            , ""                             , "none"  ,  5.0
+"LND" , "dedt"          , ""            , ""                             , "none"  ,  2e-6
+"LND" , "dedq"          , ""            , ""                             , "none"  ,  0.0
+"LND" , "drdt"          , ""            , ""                             , "none"  ,  5.0
+"LND" , "drag_q"        , ""            , ""                             , "none"  ,  0.0
+"LND" , "p_surf"        , ""            , ""                             , "none"  ,  1.e5
+      </dataTable>
+
+      <fieldTable>
+      </fieldTable>
+      <dataFile label="gridSpec" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/ocean_solo_mosaic_071823.tar</dataSource>
+        <dataSource site="gfdl">/archive/Matthew.Harrison/datasets/iOM4/ocean_solo_mosaic_040523.tar</dataSource>
+      </dataFile>
+      <dataFile label="initCond" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/WOA05_ptemp_salt_filled.nc</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/ocean_solo_inputs_041023.tar</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/AIS_SP_025deg.nc</dataSource>
+      </dataFile>
+      <dataFile label="input" target="INPUT/" chksum="" size="" timestamp="">
+        <dataSource site="ncrc">/lustre/f2/dev/Matthew.Harrison/datasets/iOM4/iced_topog_ocean_v3.nc</dataSource>
+      </dataFile>
+
+
+    </input>
+
+    <runtime>
+      <production simTime="5" units="years">
+        <segment simTime="1" units="months"/>
+        <resources jobWallclock="15:00:00" segRuntime="02:00:00">
+          <ice ranks="1024" threads="1" layout = "32,32" io_layout = "4,4" />
+          <ocn ranks="1024" threads="1" layout = "32,32" io_layout = "4,4" />
+        </resources>
+      </production>
+
+      <regression name="basic">
+        <run days="1">
+          <resources jobWallclock="01:00:00" segRuntime="01:00:00">
+          <ice ranks="1024" threads="1" layout = "32,32" io_layout = "4,4" />
+          <ocn ranks="1024" threads="1" layout = "32,32" io_layout = "4,4" />
+        </resources>
+        </run>
+      </regression>
+    </runtime>
+
+    <postProcess>
+      <!--PostProcessing component models-->
+      <component type="ocean_daily" source="ocean_daily" sourceGrid="ocean-tripolar" cmip="off">
+        <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)">
+        </timeSeries>
+      </component>
+
+      <component type="ocean_monthly_z"   source="ocean_month" sourceGrid="ocean-tripolar" cmip="off">
+        <timeSeries freq="monthly" chunkLength="$(CHUNK_LENGTH_A)" source="ocean_month">
+        </timeSeries>
+      </component>
+
+      <!-- <component type="ocean_monthly" source="ocean_month_snap" sourceGrid="ocean-tripolar" cmip="off"> -->
+      <!--   <timeSeries freq="monthly" chunkLength="$(CHUNK_LENGTH_A)"/> -->
+      <!-- </component> -->
+
+      <!--ICE-->
+      <component type="ice_daily"  source="ice_daily"  sourceGrid="ocean-tripolar" cmip="off">
+        <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)"  source="ice_daily">
+        </timeSeries>
+      </component>
+
+      <!-- <component type="atmos_daily"  source="atmos_daily"  sourceGrid="atmos-cubedsphere" xyInterp="360,576" cmip="off"> -->
+      <!--   <timeSeries freq="daily" chunkLength="$(CHUNK_LENGTH_A)"  source="atmos_daily"> -->
+      <!--   </timeSeries> -->
+      <!-- </component> -->
+
+
+      <csh><![CDATA[
+         cd $work
+r         #Make a directory to trick FRE to pick up and archive in ascii
+         mkdir extra.results
+         mv *velocity_truncations MOM_parameter_doc* SIS_parameter_doc* seaice.stats* ocean.stats* extra.results/
+         cp diag_table extra.results/.
+         cp $scriptName extra.results/runscript.csh
+         #When the ocean uses a mask_table the ocean_static.nc file produced by the model run has holes in coordinates (geolon,geolat)
+         #This causes problems for ferret and python tools for analysis.
+         #Copy a non-masked version of ocean_static.nc to be saved as a history file to be used by the analysis scipts .
+         #cp $work/INPUT/ocean_static_no_mask_table.nc $work/
+      ]]></csh>
+      <!-- <refineDiag script="/home/mdteam/DET/analysis/vitals/gfdlvitals_refineDiag.v3.0.5.csh"/> -->
+      <!-- <xi:include href="awg_include/xml_building_blocks/om4_cmip6_postprocess.xml" xpointer="xpointer(//freInclude[@name='OM4_cmip6_postprocess']/postProcess/node())"/> -->
+    </postProcess>
+
+  </experiment>
+
+
+
+
+  <!-- For a new run starting from non-restart initial conditions, this starts the first year as a new run and then restarts for subsequent years -->
+  <freInclude name="choose_restart">
+    <input>
+      <csh type="always">
+        <![CDATA[
+#------------------------------------------
+## Find out whether to restart.
+
+if ( $currentSeg == 1 ) then
+    set restart_flag = 'n'
+else
+    set restart_flag = 'r'
+    #Because of a technical issue FRE does not delete old uncombined restarts before copying the new ones for the next segment
+    #The INPUT/ ends up with inconsistent restart files which at best cause the model to crash right away.
+    if(-e $work/INPUT/MOM.res.nc.0000 ) \rm -rf $work/INPUT/MOM.res*.nc
+endif
+        ]]>
+      </csh>
+    </input>
+  </freInclude>
+
+  <!-- For a new run starting from a restart file (e.g. from the end of a spinup simulation), this always sets the restart flag -->
+  <freInclude name="always_restart">
+    <input>
+      <csh type="always">
+        <![CDATA[
+set restart_flag = 'r'
+#Because of a technical issue FRE does not delete old uncombined restarts before copying the new ones for the next segment
+#The INPUT/ ends up with inconsistent restart files which at best cause the model to crash right away.
+if(-e $work/INPUT/MOM.res.nc.0000 ) \rm -rf $work/INPUT/MOM.res*.nc
+        ]]>
+      </csh>
+    </input>
+  </freInclude>
+
+
+<experiment name="LM3_compile">
+  <description>
+    2013-02-28 slm
+    Checkout and compilation of stand-alone LM3 run with Sheffield data driver
+    checked out code to 2022.03 coupler and FMS.
+  </description>
+  <component name="FMS" paths="FMS">
+    <source versionControl="git" root="http://github.com/NOAA-GFDL">
+      <codeBase version="2022.03">FMS.git</codeBase>
+    </source>
+    <compile>
+      <cppDefs>$(F2003_FLAGS) -Duse_libMPI -Duse_netCDF</cppDefs>
+    </compile>
+  </component>
+
+  <component name="land" requires="FMS" paths="land_lad2">
+    <source versionControl="git" root="http://gitlab.gfdl.noaa.gov/fms">
+      <codeBase version="snowdiag_20211014_slm">land_lad2.git</codeBase>
+    </source>
+    <compile>
+       <cppDefs>$(F2003_FLAGS) -Duse_netCDF -DDEBUG_LAND_TILE_DIAG</cppDefs>
+    </compile>
+  </component>
+
+  <component name="coupler" requires="FMS land" paths="atmos_phys atmos_solo_land FMScoupler/full FMScoupler/shared ice_amip ice_param ocean_amip">
+    <source versionControl="git" root="http://github.com/NOAA-GFDL">
+       <codeBase version="2022.03">FMScoupler.git</codeBase>
+       <csh> <![CDATA[
+git clone --recursive -b 2022.03 http://gitlab.gfdl.noaa.gov/fms/atmos_phys.git
+echo 'removing unused code from atmos_param...'
+
+# diag_integral and  monin_obukhov are now in FMS so do not need atmos_param directory.
+#find atmos_param -maxdepth 1 -mindepth 1 -not \( -name .git -o -name diag_integral -o -name monin_obukhov \) | xargs rm -rf
+rm -rf atmos_phys/atmos_param
+#git clone -q --recursive -b 2022.03 http://gitlab.gfdl.noaa.gov/fms/atmos_shared.git
+echo 'removing unused code from atmos_shared...'
+find atmos_phys/atmos_shared -maxdepth 1 -mindepth 1 -not \( -name .git -o -name atmos_cmip_diag \) | xargs rm -rf
+
+
+git clone -q --recursive -b 2021.03  https://github.com/NOAA-GFDL/ice_param.git
+git clone -q --recursive -b master http://gitlab.gfdl.noaa.gov/fms/ice_amip.git
+git clone -q --recursive -b master http://gitlab.gfdl.noaa.gov/fms/ocean_amip.git
+git clone -q --recursive -b warsaw_20170804_slm http://gitlab.gfdl.noaa.gov/fms/atmos_solo_land.git
+       ]]> </csh>
+    </source>
+    <compile>
+      <cppDefs>$(F2003_FLAGS) -Duse_libMPI -Duse_netCDF</cppDefs>
+    </compile>
+  </component>
+</experiment>
+
+<experiment name="LM4p0_C384_spinup_SP1" inherit="LM3_compile">
+ <description>
+
+ </description>
+
+   <input>
+      <dataTable>
+"ATM", "co2_bot", "", "", .true., 286.0e-6
+      </dataTable>
+      <fieldTable> <![CDATA[
+# specific humidity for moist runs
+ "TRACER", "atmos_mod",    "sphum"
+           "longname",     "specific humidity"
+           "units",        "kg/kg"
+           "profile_type", "fixed", "surface_value=3.e-6" /
+
+ "TRACER", "land_mod", "sphum"
+           "longname",     "specific humidity"
+           "units",        "kg/kg" /
+
+# carbon dioxide in atmos and land
+  "TRACER", "atmos_mod",    "co2"
+            "longname",     "carbon dioxide"
+            "units",        "kg/kg"
+            "convection",   "all"
+            "profile_type","fixed","surface_value = 434.5626E-06"/
+   "TRACER", "land_mod",     "co2"
+            "longname",     "carbon dioxide"
+            "units",        "kg/kg" /
+
+# river tracer for DOC
+"river_tracer", "land_mod", "DOC"
+            "longname", "dissolved organic carbon"
+            "units", "kgC/kg"
+            "flux_units", "kgC/m2/s"
+            "store_units", "kgC/m2" /
+    ]]> </fieldTable>
+<!--       <diagTable> -->
+<!-- $name -->
+<!-- $baseDate -->
+<!-- #output files -->
+<!-- "atmos_month",      1, "months", 1, "days", "time" -->
+<!-- #input forcing output variables -->
+<!--  "atmos_pr", "swdn",                   "swdn",                    "atmos_month", "all", .true., "none", 2 -->
+<!--  "atmos_pr", "lw",                     "lwdn",                    "atmos_month", "all", .true., "none", 2 -->
+<!--  "atmos_pr", "ps",                     "ps",                      "atmos_month", "all", .true., "none", 2 -->
+<!--  "atmos_pr", "lprec",                  "lprec",                   "atmos_month", "all", .true., "none", 2 -->
+<!--  "atmos_pr", "fprec",                  "fprec",                   "atmos_month", "all", .true., "none", 2 -->
+
+<!-- #surface values -->
+<!--  "flux",   "land_mask",                "land_mask",               "atmos_month", "all", .false., "none", 2 -->
+<!--  "flux",   "ice_mask",                 "ice_mask",                "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "z_atm",                    "z_atm",                   "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "drag_moist",               "drag_moist",              "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "drag_heat",                "drag_heat",               "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "drag_mom",                 "drag_mom",                "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "rough_moist",              "rough_moist",             "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "rough_heat",               "rough_heat",              "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "rough_mom",                "rough_mom",               "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "rough_scale",              "rough_scale",             "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "gust",                     "gust",                    "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "wind",                     "wind",                    "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "t_ref",                    "t_ref",                   "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "q_ref",                    "q_ref",                   "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "rh_ref",                   "rh_ref",                  "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "wind_ref",                 "wind_ref",                "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "u_ref",                    "u_ref",                   "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "v_ref",                    "v_ref",                   "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "u_star",                   "u_star",                  "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "t_surf",                   "t_surf",                  "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "t_ca",                     "t_ca",                    "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "sphum_surf",               "q_surf",                  "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "shflx",                    "shflx",                   "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "evap",                     "evap",                    "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "lwflx",                    "lwflx",                   "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "co2_atm_dvmr",             "co2_atm_dvmr",            "atmos_month", "all", .true., "none", 2 -->
+<!--  "flux",   "co2_surf_dvmr",            "co2_surf_dvmr",           "atmos_month", "all", .true., "none", 2 -->
+
+<!-- #land static output -->
+<!-- "land_static_sg",     -1,  "months", 1, "days", "time" -->
+<!-- "land_sg", "cell_area",                "cell_area",               "land_static_sg", "all", .false., "none", 2 -->
+
+<!-- "land_static",     -1,  "months", 1, "days", "time" -->
+<!-- "lake",    "lake_depth",               "lake_depth",              "land_static", "all", .false., "none", 2 -->
+<!-- "lake",    "lake_width",               "lake_width",              "land_static", "all", .false., "none", 2 -->
+<!-- "land",    "area_land",                "land_area",               "land_static", "all", .false., "none", 2 -->
+<!-- "land",    "area_lake",                "lake_area",               "land_static", "all", .false., "none", 2 -->
+<!-- "land",    "area_soil",                "soil_area",               "land_static", "all", .false., "none", 2 -->
+<!-- "land",    "land_frac",                "land_frac",               "land_static", "all", .false., "none", 2 -->
+<!-- "land",    "area_glac",                "glac_area",               "land_static", "all", .false., "none", 2 -->
+<!-- "land",    "frac_soil",                "frac_soil",               "land_static", "all", .false., "none", 2 -->
+<!-- "land",    "frac_glac",                "frac_glac",               "land_static", "all", .false., "none", 2 -->
+<!-- "land",    "frac_lake",                "frac_lake",               "land_static", "all", .false., "none", 2 -->
+<!-- "soil",    "soil_Ksat",                "soil_Ksat",               "land_static", "all", .false., "none", 2 -->
+<!-- "soil",    "soil_rlief",               "soil_rlief",              "land_static", "all", .false., "none", 2 -->
+<!-- "soil",    "soil_sat",                 "soil_sat",                "land_static", "all", .false., "none", 2 -->
+<!-- "soil",    "soil_type",                "soil_type",               "land_static", "all", .false., "none", 2 -->
+<!-- "soil",    "soil_wilt",                "soil_wilt",               "land_static", "all", .false., "none", 2 -->
+
+<!-- # land monthly output -->
+<!-- "land_month",       1,  "months", 1, "days", "time" -->
+<!-- # area fractions for different tile types -->
+<!-- "land",    "area_ntrl",                "area_ntrl",               "land_month", "all", .true., "none", 2 -->
+<!-- # land multi-level month-average output -->
+<!-- "glacier", "glac_T",                   "glac_T",                  "land_month", "all", .true., "none", 2 -->
+<!-- "lake",    "lake_dz",                  "lake_dz",                 "land_month", "all", .true., "none", 2 -->
+<!-- "lake",    "lake_K_z",                 "lake_K_z",                "land_month", "all", .true., "none", 2 -->
+<!-- "lake",    "lake_T",                   "lake_T",                  "land_month", "all", .true., "none", 2 -->
+<!-- "lake",    "lake_wl",                  "lake_wl",                 "land_month", "all", .true., "none", 2 -->
+<!-- "lake",    "lake_ws",                  "lake_ws",                 "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_ice",                 "soil_ice",                "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_liq",                 "soil_liq",                "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_psi",                 "soil_psi",                "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_T",                   "soil_T",                  "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_uptk",                "soil_uptk",               "land_month", "all", .true., "none", 2 -->
+<!-- # land 2-band variables -->
+<!-- "land",    "albedo_dif",               "albedo_dif",              "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "albedo_dir",               "albedo_dir",              "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "swdn_dif",                 "swdn_dif",                "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "swdn_dir",                 "swdn_dir",                "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "swup_dif",                 "swup_dif",                "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "swup_dir",                 "swup_dir",                "land_month", "all", .true., "none", 2 -->
+<!-- # land one-level month-average output -->
+<!-- "land",    "evap",                     "evap_land",               "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "evap_soil",                "evap_soil",               "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "fevapg",                   "fevapg",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "fevaps",                   "fevaps",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "fevapv",                   "fevapv",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "flw",                      "flw",                     "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "fprec_l",                  "fprec_l",                 "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "frunf",                    "frunf",                   "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "fsw",                      "fsw",                     "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "FWS",                      "FWS",                     "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "FWSv",                     "FWSv",                    "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "grnd_flux",                "grnd_flux",               "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "hevap",                    "hevap",                   "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "hprec",                    "hprec",                   "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "hrunf",                    "hrunf",                   "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "levapg",                   "levapg",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "levaps",                   "levaps",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "levapv",                   "levapv",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "levapv_soil",              "levapv_soil",             "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "fevapv_soil",              "fevapv_soil",             "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "levapg_soil",              "levapg_soil",             "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "fevapg_soil",              "fevapg_soil",             "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "levaps_soil",              "levaps_soil",             "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "fevaps_soil",              "fevaps_soil",             "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "lwdn",                     "lwdn",                    "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "LWS",                      "LWS",                     "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "LWSv",                     "LWSv",                    "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "melt",                     "melt",                    "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "melts",                    "melts",                   "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "meltg_glac",               "meltg_glac",              "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "ntiles",                   "ntiles",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "precip",                   "precip",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "qca",                      "qca",                     "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "qco2",                     "qco2",                    "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "runf",                     "runf",                    "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "sens",                     "sens",                    "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "snow",                     "snow",                    "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "Tca",                      "Tca",                     "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "Tgrnd",                    "Tgrnd",                   "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "Trad",                     "Trad",                    "land_month", "all", .true., "none", 2 -->
+<!-- "flux_land", "t_ref",                  "t_ref",                   "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "transp",                   "transp",                  "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "water_lake",               "water_lake",              "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "water_soil",               "water_soil",              "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_fgw",                 "soil_fgw",                "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_fsat",                "soil_fsat",               "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_psi_n",               "soil_psi_n",              "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_rbf",                 "soil_rbf",                "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_rie",                 "soil_rie",                "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_rnu",                 "soil_rnu",                "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_rsn",                 "soil_rsn",                "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_wtdep",               "soil_wtdep",              "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "soil_wt_4",                "soil_wt_4",               "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "an_cl",                    "an_cl",                   "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "an_op",                    "an_op",                   "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "asoil",                    "asoil",                   "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "bl",                       "bl",                      "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "blv",                      "blv",                     "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "br",                       "br",                      "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "bsw",                      "bsw",                     "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "bwood",                    "bwood",                   "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "fsc",                      "fsc",                     "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "gpp",                      "gpp",                     "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "height",                   "vegn_height",             "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "LAI",                      "LAI",                     "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "nep",                      "nep",                     "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "npp",                      "npp",                     "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "root_density",             "vegn_rden",               "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "resp",                     "resp",                    "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "resg",                     "resg",                    "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "root_zeta",                "vegn_rzeta",              "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "rsoil",                    "rsoil",                   "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "rsoil_fast",               "rsoil_fast",              "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "rsoil_slow",               "rsoil_slow",              "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "snow_crit",                "vegn_sncrit",             "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "species",                  "species",                 "land_month", "all", .true., "none", 2 -->
+<!-- "soil",    "ssc",                      "ssc",                     "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "temp",                     "vegn_T",                  "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "theta",                    "theta",                   "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "tsoil_av",                 "tsoil_av",                "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "csmoke_rate",              "csmoke_rate",             "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "evap_demand",              "evap_demand",             "land_month", "all", .true., "none", 2 -->
+<!-- "land",    "soil_water_supply_soil",   "soil_water_supply",       "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "status",                   "status",                  "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "wl",                       "wl",                      "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "ws",                       "ws",                      "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "stomatal_cond",            "stomatal_cond",           "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "psiph",                    "psiph",                   "land_month", "all", .true., "none", 2 -->
+<!-- "vegn",    "theph",                    "theph",                   "land_month", "all", .true., "none", 2 -->
+
+<!-- # land monthly instant output -->
+<!-- "land_month_inst",  1,  "months", 1, "days", "time" -->
+<!-- "land",    "LWS",                      "LWS",                     "land_month_inst", "all", .false., "none", 2 -->
+<!-- "land",    "FWS",                      "FWS",                     "land_month_inst", "all", .false., "none", 2 -->
+<!-- "land",    "HS",                       "HS",                      "land_month_inst", "all", .false., "none", 2 -->
+<!-- "vegn",    "afire",                    "afire",                   "land_month_inst", "all", .false., "none", 2 -->
+<!-- "vegn",    "atfall",                   "atfall",                  "land_month_inst", "all", .false., "none", 2 -->
+<!-- "vegn",    "csmoke",                   "csmoke",                  "land_month_inst", "all", .false., "none", 2 -->
+<!-- "vegn",    "lambda",                   "lambda",                  "land_month_inst", "all", .false., "none", 2 -->
+<!-- "vegn",    "ncm",                      "ncm",                     "land_month_inst", "all", .false., "none", 2 -->
+<!-- "vegn",    "species",                  "species",                 "land_month_inst", "all", .false., "none", 2 -->
+<!-- "vegn",    "status",                   "status",                  "land_month_inst", "all", .false., "none", 2 -->
+
+<!-- "river_static",     -1,  "months", 1, "days", "time" -->
+<!-- "river",   "area_land",                "land_area",               "river_static", "all", .false., "none", 2 -->
+<!-- "river",   "rv_basin",                 "rv_basin",                "river_static", "all", .false., "none", 2 -->
+<!-- "river",   "rv_dir",                   "rv_dir",                  "river_static", "all", .false., "none", 2 -->
+<!-- "river",   "rv_length",                "rv_length",               "river_static", "all", .false., "none", 2 -->
+<!-- "river",   "rv_trav",                  "rv_trav",                 "river_static", "all", .false., "none", 2 -->
+<!-- "river",   "cell_area",                "cell_area",               "river_static", "all", .false., "none", 2 -->
+<!-- "river",   "no_riv",                   "no_riv",                  "river_static", "all", .false., "none", 2 -->
+
+<!-- "river_month",       1,  "months", 1, "days", "time" -->
+<!-- "river",   "rv_depth",                 "rv_depth",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_d_hEt",                 "rv_d_hEt",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_d_h2o",                 "rv_d_h2o",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_d_ice",                 "rv_d_ice",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_ice",                   "rv_ice",                  "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_i_het",                 "rv_i_het",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_i_h2o",                 "rv_i_h2o",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_i_ice",                 "rv_i_ice",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_o_het",                 "rv_o_het",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_o_h2o",                 "rv_o_h2o",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_o_ice",                 "rv_o_ice",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_Qavg",                  "rv_Qavg",                 "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_T",                     "rv_T",                    "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_veloc",                 "rv_veloc",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "rv_width",                 "rv_width",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "LWSr",                     "LWSr",                    "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "FWSr",                     "FWSr",                    "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "dis_heat",                 "dis_heat",                "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "dis_ice",                  "dis_ice",                 "river_month", "all", .true., "none", 2 -->
+<!-- "river",   "dis_liq",                  "dis_liq",                 "river_month", "all", .true., "none", 2 -->
+
+<!-- "river_month_inst",  1,  "months", 1, "days", "time" -->
+<!-- "river",   "LWSr",                     "LWSr",                    "river_month_inst", "all", .false., "none", 2 -->
+<!-- "river",   "FWSr",                     "FWSr",                    "river_month_inst", "all", .false., "none", 2 -->
+<!-- "river",   "HSr",                      "HSr",                     "river_month_inst", "all", .false., "none", 2 -->
+
+<!-- # conservation checks -->
+<!-- "cons_month",  1,  "months", 1, "days", "time" -->
+<!-- "land",    "water_cons",               "water_cons",              "cons_month", "all", .true., "none", 2 -->
+<!-- "land",    "water_cons",               "water_cons_max",          "cons_month", "all", max, "none", 2 -->
+<!-- "land",    "water_cons",               "water_cons_min",          "cons_month", "all", min, "none", 2 -->
+<!-- "land",    "carbon_cons",              "carbon_cons",             "cons_month", "all", .true., "none", 2 -->
+<!-- "land",    "carbon_cons",              "carbon_cons_max",         "cons_month", "all", max, "none", 2 -->
+<!-- "land",    "carbon_cons",              "carbon_cons_min",         "cons_month", "all", min, "none", 2 -->
+<!--       </diagTable> -->
+      <diagTable>
+$name
+$baseDate
+      </diagTable>
+
+      <namelist name="amip_interp_nml">
+       data_set = 'reynolds_oi'
+       date_out_of_range = 'climo'
+      </namelist>
+      <namelist name="atmos_prescr_nml">
+       read_forcing = .true.
+       gust_to_use  = 'computed'
+       gust_min     = 0.01
+       atmos_bottom = 35.0
+      </namelist>
+      <namelist name="cana_nml">
+       turbulence_to_use = "lm3v"
+       init_co2 = 286.0e-6
+       canopy_air_mass_for_tracers = 10.0
+       allow_small_z0 = .true.
+       sai_turb = .true.
+      </namelist>
+      <namelist name="coupler_nml">
+       months = $months
+       days   = $days
+       current_date = 0001,1,1,0,0,0
+       calendar = 'JULIAN'
+       dt_atmos = 1800
+       dt_cpld = 7200
+       use_lag_fluxes=.true.
+       concurrent = .false.
+       check_stocks = -1
+      </namelist>
+      <namelist name="diag_integral_nml">
+       file_name  = 'diag_integral.out'
+       time_units = 'days'
+       output_interval = 1.0
+      </namelist>
+      <namelist name="diag_manager_nml">
+       max_files = 50
+       max_axes = 200
+       max_num_axis_sets = 200
+       max_input_fields = 800
+       max_output_fields = 1300
+       mix_snapshot_average_fields=.false.
+      </namelist>
+      <namelist name="flux_exchange_nml">
+       debug_stocks = .FALSE.
+       divert_stocks_report = .TRUE.
+       do_area_weighted_flux = .FALSE.
+      </namelist>
+      <namelist name="fms_io_nml">
+       threading_read='multi'
+       max_files_r = 300
+       max_files_w = 300
+      </namelist>
+      <namelist name="fms_nml">
+       clock_grain='ROUTINE'
+       domains_stack_size = 115200
+       stack_size =0
+      </namelist>
+      <namelist name="glac_data_nml">
+       use_lm2_awc = .true.,
+       rsa_exp_global = 10.,
+       f_iso_cold = 0.92, 0.58
+       f_vol_cold = 0.06, 0.08
+       f_geo_cold = 0.00, 0.00
+       f_iso_warm = 0.92, 0.58
+       f_vol_warm = 0.06, 0.08
+       f_geo_warm = 0.00, 0.00
+       dat_emis_dry = 1.,
+       dat_emis_sat = 1.,
+       geothermal_heat_flux_constant = 0.065
+      </namelist>
+      <namelist name="glac_nml">
+       conserve_glacier_mass = .true.
+       lm2 = .true.
+       albedo_to_use = 'brdf-params'
+      </namelist>
+      <namelist name="harvesting_nml">
+       do_harvesting          =.true.
+       grazing_intensity      = 18.25 ! roughly 5% of biomass per day
+       grazing_residue        = 0.1
+       grazing_frequency      = 'daily'
+       min_lai_for_grazing    = 1.0
+       frac_wood_wasted_harv  = 0.25
+       frac_wood_wasted_clear = 0.25
+       !frac_wood_fast         = ONETHIRD
+       !frac_wood_med          = ONETHIRD
+       !frac_wood_slow         = ONETHIRD
+       crop_seed_density      = 0.1
+       waste_below_ground_wood = .TRUE.
+      </namelist>
+      <namelist name="hlsp_nml">
+       max_num_topo_hlsps = 1
+       num_vertclusters = 10
+       use_geohydrodata = .true.
+       strm_depth_penetration = 1.5
+       use_hlsp_aspect_in_gwflow = .true.
+       diagnostics_by_cluster = .true.
+       init_wt_strmelev = .false.
+       dammed_strm_bc = .true.
+       limit_intertile_flow = .true. !.false.
+       flow_ratio_limit = 0.25
+      </namelist>
+      <namelist name="ice_albedo_nml">
+       t_range = 10.
+      </namelist>
+      <namelist name="ice_model_nml">
+       interp_method = 'bilinear'
+      </namelist>
+      <namelist name="lake_data_nml">
+       lake_to_use = 'from-rivers'
+       lake_specific_width = .false.
+       large_lake_sill_width = 800.
+       num_l = 20,
+       dat_emis_dry = 1.,
+       dat_emis_sat = 1.,
+       dat_heat_capacity_ref = 0.,
+       f_iso_liq = 0.025, 0.01
+       f_iso_ice = 0.025, 0.01
+       f_vol_liq = 0., 0.
+       f_vol_ice = 0., 0.
+       f_geo_liq = 0., 0.
+       f_geo_ice = 0., 0.
+       dry_lake_depth_frac = 0.5
+       dat_z0_momentum(1)     = 1.4e-4
+       dat_z0_momentum_ice(1) = 1.4e-4
+       k_over_B_ice           = 0.25
+       geothermal_heat_flux_constant = 0.065
+      </namelist>
+      <namelist name="lake_nml">
+       albedo_to_use = 'brdf-params'
+       float_ice_to_top = .true.
+       lake_depth_max = 1.e10
+       max_plain_slope = 16.e-5
+       K_z_background  = 15.e-5
+      </namelist>
+      <namelist name="land_conservation_nml">
+       do_check_conservation = .false.
+       carbon_cons_tol = 1e-10
+       water_cons_tol = 1e-7
+       heat_cons_tol = 1e-5
+      </namelist>
+      <namelist name="land_debug_nml">
+       watch_point = 0, 0, 0, 1
+      </namelist>
+      <namelist name="land_io_nml">
+      </namelist>
+      <namelist name="land_model_nml">
+       tau_snow_T_adj = 604800.
+       prohibit_negative_canopy_water=.false.
+       min_frac = 1e-8
+       npes_io_group = 8
+      </namelist>
+      <!--
+      <namelist name="landuse_nml">
+       do_landuse_change = .false.
+       data_type   = 'luh2'
+       input_file  = '/lustre/f1/unswept/Sergey.Malyshev/DATA/landuse/LUH2/v2.0h/extras/zero-transitions.v20170711.nc'
+       state_file  = '/lustre/f1/unswept/Sergey.Malyshev/DATA/landuse/LUH2/v2.0h/extras/state-1850-nosecd.v20170711.nc'
+       static_file = '/lustre/f1/unswept/Sergey.Malyshev/DATA/landuse/LUH2/v2.0h/landfrac.nc'
+       distribute_transitions = 'min-n-tiles'
+      </namelist>
+      -->
+      <namelist name="landuse_nml">
+       do_landuse_change = .false.
+       data_type   = 'luh2'
+       input_file  = '/lustre/f2/pdata/gfdl/cmip6/datasets/CM4/forcings/landuse/LUH2/v2.0h/extras/zero-transitions.v20170711.nc'
+       state_file  = '/lustre/f2/pdata/gfdl/cmip6/datasets/CM4/forcings/landuse/LUH2/v2.0h/extras/state-1850-nosecd.v20170711.nc'
+       static_file = '/lustre/f2/pdata/gfdl/cmip6/datasets/CM4/forcings/landuse/LUH2/v2.0h/landfrac.nc'
+       distribute_transitions = 'min-n-tiles'
+      </namelist>
+      <namelist name="monin_obukhov_nml">
+       stable_option = 2
+       rich_crit = 1.0
+       zeta_trans = 0.5
+      </namelist>
+      <namelist name="ocean_albedo_nml">
+       ocean_albedo_option = 3
+      </namelist>
+      <namelist name="ocean_model_nml">
+       interp_method = 'bilinear'
+      </namelist>
+      <namelist name="ocean_rough_nml">
+       rough_scheme = 'beljaars'
+      </namelist>
+      <namelist name="photosynthesis_nml">
+       photosynthesis_to_use = 'leuning'
+       co2_to_use_for_photosynthesis ='prescribed'    ! slm/jgj 2016/12/16 ok to set to interactive
+       co2_for_photosynthesis = 284.262e-6             ! jgj  to match CMIP6 Jan 1 1850 co2 value
+       respiration_to_use = 'LM3'
+       Kok_effect = .False.
+       lai_eps=1.e-5
+      </namelist>
+      <namelist name="prescr_forcing_nml">
+       type_of_forcing_data = 'Sheffield'
+       timeline = 'loop'
+       start_loop = $ys,1,1,0,0,0
+       end_loop   = $ye,1,1,0,0,0
+       use_diurnal_solar = .true.
+       limit_swdn_by_TOA_flux = .true.
+       filelist = 'file_table'
+       assume_constant_dt = .true.
+      </namelist>
+      <namelist name="river_nml">
+       dt_slow     = 86400.
+       land_area_called_cellarea = .true.
+       all_big_outlet_ctn0 = .true.
+       ave_DHG_exp = 0.55, 0.45, 0.0
+       ave_DHG_coef = 7.5, 0.3, 0.444444444
+       ave_AAS_exp = 0.26, 0.40, 0.34
+      </namelist>
+      <namelist name="river_physics_nml">
+       lake_sfc_w_min = 10.
+       prohibit_cold_ice_outflow = .FALSE.
+      </namelist>
+      <namelist name="sat_vapor_pres_nml">
+       construct_table_wrt_liq = .true.
+       construct_table_wrt_liq_and_ice = .true.
+      </namelist>
+      <namelist name="snow_data_nml">
+       emis_snow_max = 1.
+       emis_snow_min = 1.
+       z0_momentum = 0.01
+       num_l = 5
+       dz = 0.05, 0.2, 0.5, 0.2, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0
+       f_iso_cold = 0.92, 0.58
+       f_vol_cold = 0.06, 0.08
+       f_geo_cold = 0.00, 0.00
+       f_iso_warm = 0.77, 0.43
+       f_vol_warm = 0.06, 0.08
+       f_geo_warm = 0.00, 0.00
+       depth_crit = 0.0125
+       thermal_cond_ref = 0.09
+      </namelist>
+      <namelist name="snow_nml">
+       min_snow_mass = 1.e-7
+       albedo_to_use = 'brdf-params'
+       snow_density = 250.
+       prevent_tiny_snow = .true.
+      </namelist>
+      <namelist name="soil_data_nml">
+       geohydrology_to_use    = 'hill'
+       use_comp_for_ic        = .true.
+       use_comp_for_push      = .true.
+       use_tau_fix            = .false.
+       use_sat_fix            = .true.
+       use_alt3_soil_hydraulics = .true.
+       gw_scale_soil_depth  = 0.1666667
+       gw_scale_perm        = 1.0
+       gw_scale_relief      = 0.5
+       aspect           = 0.01
+       k0_macro_z       = 0.0
+       k0_macro_x       = 1.0
+       freeze_factor    = 1.5
+       comp             = 1e-4
+       num_l            = 20
+       dz = 0.020, 0.040, 0.040, 0.050, 0.05, 0.100, 0.10, 0.200, 0.200, 0.2,
+            0.40,  0.40,  0.40,  0.4,   0.4,   1.0,   1.0,  1.0,  1.5,   2.5
+       soil_type_file          = "INPUT/soil_type.nc"
+       input_cover_types       =  1,       2,       3,       4,       5,       6,       7,       8,       9,       10,      11,      12,      13,       14
+       tile_names              =  'hec',   'sic',   'lic',   'sicl',  'cl',    'si',    'sil',   'sac',   'l',     'sacl',  'sal',  'ls',     's',     'u'
+       dat_w_sat               =  0.468,   0.468,   0.468,   0.464,   0.465,   0.476,   0.476,   0.406,   0.439,   0.404,   0.434,   0.421,   0.339,   0.439
+       dat_k_sat_ref           =  0.00097, 0.0013,  0.00097, 0.002,   0.0024,  0.0028,  0.0028,  0.0072,  0.0033,  0.0045,  0.0052,  0.014,   0.047,   0.0033
+       dat_psi_sat_ref         = -0.47,   -0.32,   -0.47,   -0.62,   -0.26,   -0.76,   -0.76,   -0.098,  -0.35,   -0.13,   -0.14,   -0.036   -0.069,  -0.35
+       dat_chb                 =  12.0,    10.0,    12.0,    8.7,     8.2,     5.3,     5.3,     11.0,    5.2,     6.8,     4.7,     4.3,     2.8,     5.2
+       dat_heat_capacity_dry   =  1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6,   1.1e6
+       dat_thermal_cond_dry    =  0.21,    0.21,    0.21,    0.21,    0.21,    0.21,    0.21,    0.21,    0.21,    0.21,    0.21,    0.21,    0.14,    0.21
+       dat_thermal_cond_sat    =  1.5,     1.5,     1.5,     1.5,     1.5,     1.5,     1.5,     1.5,     1.5,     1.5,     1.5,     1.5,     2.3,     1.5
+       dat_thermal_cond_exp    =  6,       6,       6,       5,       5,       5,       5,       6,       5,       5,       5,       5,       3,       5
+       dat_thermal_cond_scale  =  10,      10,      10,      0.5,     0.5,     0.5,     0.5,     10,      0.5,     0.5,     0.5,     0.5,     15,      0.5
+       dat_thermal_cond_weight =  0.7,     0.7,     0.7,     0.7,     0.7,     0.7,     0.7,     0.7,     0.7,     0.7,     0.7,     0.7,     0.2,     0.7
+       dat_emis_dry            =  1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0
+       dat_emis_sat            =  1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0,     1.0
+       dat_tf_depr             =  2.0,     2.0,     2.0,     2.0,     2.0,     2.0,     2.0,     2.0,     2.0,     2.0,     2.0,     2.0,     2.0,     2.0
+       dat_z0_momentum         =  0.01,    0.01,    0.01,    0.01,    0.01,    0.01,    0.01,    0.01,    0.01,    0.01,    0.01,    0.01,    0.01,    0.01
+       Dpsi_min_const      = -1.e12
+       K_min               = 1.e-12
+       geothermal_heat_flux_constant = 0.065
+       retro_a0N1 = .true.
+      </namelist>
+      <namelist name="soil_nml">
+       init_wtdep    = 10.
+       albedo_to_use = 'brdf-maps'
+       uptake_to_use = 'darcy2d-linearized'
+       uptake_oneway = .true.
+       active_layer_drainage_acceleration = 1.
+       gw_flux_max   = 0.001
+       lrunf_from_div = .false.
+       cold_infilt   = .false.
+       use_depth_to_wt_4 = .true.
+       layer_for_gw_switch = 16
+       bottom_up_cold_infilt = .true.
+       cold_depth = 3.0
+       bwood_macinf = 1.
+       allow_neg_wl = .true.
+       prohibit_negative_water_div = .true.
+       fix_neg_subsurface_wl = .TRUE.
+       ! write_soil_carbon_restart = .TRUE.
+      </namelist>
+      <namelist name="static_veg_nml">
+       use_static_veg = .FALSE.
+       timeline   = 'loop'
+       start_loop = 1981, 1, 1, 0, 0, 0
+       end_loop   = 1982, 1, 1, 0, 0, 0
+       fill_land_mask = .TRUE.
+       write_static_veg = .FALSE.
+       input_file = 'INPUT/19810101.static_veg_out.nc'
+      </namelist>
+      <namelist name="surface_flux_nml">
+       gust_min = 1.e-10
+       raoult_sat_vap = .true.
+      </namelist>
+      <namelist name="topo_rough_nml">
+       use_topo_rough    = .true.
+       max_topo_rough    = 100.0
+       topo_rough_factor = 0.01
+       topo_rough_source = 'input'
+       topo_rough_file = 'INPUT/topo_rough_land.nc'
+      </namelist>
+      <namelist name="topography_nml">
+       topog_file = 'INPUT/navy_topography.data.nc'
+      </namelist>
+      <namelist name="vegn_data_nml">
+       vegn_to_use = 'uniform'
+       K1=10,
+       K2=0.1,
+       fsc_liv=0.9,
+       fsc_wood=0.45,
+       c1(4) = 0.3
+       c2(4) = 0.3
+       Vmax = 2.0E-5, 2.0E-5, 2.0E-5, 2.0E-5, 1.50E-5,
+       m_cond = 4., 9., 9., 7., 7.,
+       alpha_phot = 0.05, 0.06, 0.06, 0.06, 0.06,
+       gamma_resp = 0.03, 0.02, 0.02, 0.02, 0.02,
+       tc_crit(0:2) = 3*273.16
+       fact_crit_phen(0:4) = 0., 0., 0., 0., 0.
+       fact_crit_fire(0:4) = 0., 0., 0., 0., 0.
+       cnst_crit_phen(0:4) = 0.30, 0.15, 0.15, 0.30, 0.30
+       cnst_crit_fire(0:4) = 0.15,  0.40, 0.15, 0.15, 0.15
+       wet_leaf_dreg(0:4)  = .3, .3, .3, .3, .3
+       ksi =  0, 0, 0, 0, 0,
+       leaf_refl(0:4,1) = 0.11, 0.11, 0.10, 0.10, 0.10
+       leaf_refl(0:4,2) = 0.58, 0.58, 0.45, 0.45, 0.39,
+       dat_root_zeta(0:4) =   0.35212, 0.17039, 0.28909, 0.25813, 0.17039
+       critical_root_density = 0.0,
+       tau_drip_s     = 259200.0
+       cmc_lai(0:4) = 0.02, 0.02, 0.02, 0.02, 0.02
+       csc_lai(0:4) = 0.30, 0.30, 0.30, 0.30, 0.2
+       dat_snow_crit = 2*1.e7, .1, 1.e7, .1
+       t_transp_min = 268.
+       srl(0:1) = 112.0e3, 150.0e3
+       root_perm = 14*5e-7
+       alpha(1,3) = 4
+       leaf_age_tau(2) = 150
+       smoke_fraction = 0.9, 0.9, 0.6, 0.6, 0.6
+       tg_c3_thresh = 1
+       phen_ev1 = 0.2
+       phen_ev2 = 0.7
+       cmc_eps = 0.01
+       alpha(0:4,6) = 0.0, 0.0, 0.012, 0.012, 0.012
+       treefall_disturbance_rate = 0.175, 0.185, 0.025, 0.0275, 0.027
+       use_light_saber = .true.
+       sai_cover = .true.
+       sai_rad = .true.
+       min_lai = 1.e-5   ! h1g, prevent numerical instability, 2017-08-24
+      </namelist>
+      <namelist name="vegn_nml">
+       init_Tv = 288.0
+       rad_to_use = 'two-stream'
+       snow_rad_to_use = 'paint-leaves'
+       do_cohort_dynamics   = .TRUE.
+       do_patch_disturbance = .TRUE.
+       do_phenology         = .TRUE.
+       do_biogeography      = .TRUE.
+       do_seed_transport    = .TRUE.
+       tau_smooth_ncm = 22.0
+       rav_lit_bwood = 300.
+      </namelist>
+      <namelist name="xgrid_nml">
+       make_exchange_reproduce = .false.
+      </namelist>
+
+<!-- SCRIPT LOADING FORCING DATA -->
+      <csh> <![CDATA[
+# get the land forcing files
+mkdir $work/FORCING
+set ys                 = $(FORCING_YS)
+set ye                 = $(FORCING_YE)
+set land_forcing_dir   = "/lustre/f2/dev/gfdl/Sergey.Malyshev/DATA/land_forcing/Sheffield/2011-03-14"
+set year               = $ys
+while ( $year <= $ye )
+   ls -1 $land_forcing_dir/$year.nc >> $work/file_table
+   @ year ++
+end
+
+# increase "ye" by 1 to prepare for using it in the prescr_forcing_nml end of loop
+@ ye ++
+       ]]> </csh>
+
+      <fmsDataSets>
+$(FMS_ARCHIVE_ROOT)/module_data/riga/sst_data.cpio
+$(FMS_ARCHIVE_ROOT)/module_data/riga/navy_topography.data.nc
+$DEV/gfdl/Sergey.Malyshev/DATA/lm3/misc/CM2.1U_Control-1860_D4.2060-2109.biodata.nc=biodata.nc
+/lustre/f2/dev/Matthew.Harrison/datasets/OM_4500x3528_C384/land_data.020123.tar
+/lustre/f2/dev/Matthew.Harrison/datasets/OM_4500x3528_C384/river_data.020923.tar
+$DEV/gfdl/Sergey.Malyshev/DATA/co2/co2_rcp45_gblannualdata_1800-2500_2x2.nc=co2_gblannualdata.nc
+      </fmsDataSets>
+      <gridSpec file="/lustre/f2/dev/Matthew.Harrison/datasets/OM_4500x3528_C384/quick_mosaic.020223.tar"/>
+
+   </input>
+
+   <runtime>
+      <production simTime="300" units="years">
+         <segment simTime="10" units="years"/>
+         <resources jobWallclock="16:00:00" segRuntime="04:00:00" >
+            <atm ranks="864" threads="1" io_layout= "1,1" />
+         </resources>
+      </production>
+   </runtime>
+
+   </experiment>
+
+<experiment name="LM4p0_C384_spinup_SP1.2" inherit="LM4p0_C384_spinup_SP1">
+  <input>
+      <gridSpec file="/lustre/f2/dev/Matthew.Harrison/datasets/OM_4500x3528_C384/mosaic.020123.tar"/>
+  </input>
+
+   <runtime>
+      <production simTime="300" units="years">
+         <segment simTime="10" units="years"/>
+         <resources jobWallclock="16:00:00" segRuntime="08:00:00" >
+            <atm ranks="864" threads="1" io_layout= "1,1" />
+         </resources>
+      </production>
+   </runtime>
+
+</experiment>
+
+</experimentSuite>
